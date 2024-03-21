@@ -63,7 +63,7 @@ pause
 This will run the script and keep the terminal open to assist in debugging when needed. When the BAT file is ready, point Task Scheduler to the BAT file and schedule it for the time you prefer.
 
 # Will you automate set-up for all leagues and create a invite link for the bot in the future?
-It's a possibility, but more details and personal time are needed here before I can proceed. I would need to specifically consider if there are any potential security concerns with obtaining ESPN cookie and SWID info through user input (this would be through DM if I were to do so). For now, you are free to use the basic template of the script to host it on whichever server you desire.
+It's a possibility, but more details and personal time are needed here before I can proceed. I would need to specifically consider if there are any potential security concerns with obtaining ESPN cookie and SWID info through user input (this would be through DM if I were to do so). If I pursue a version that can join any server and take in user's S2 and SWID to create the league connection, it would be through a branch of the original repo. For now, you are free to use the basic template of the script to host it on whichever server you desire.
 
 # Who do you want to thank?
 
