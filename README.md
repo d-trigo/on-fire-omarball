@@ -8,6 +8,8 @@ This project was developed for my local fantasy league (Omarball) to be used in 
 
 I coded this in Python using the Ball Don't Lie API and ESPN API package. There is also an R script stored that holds all the calculations for z-scores; the script fetches all cumulative stats for players per season and then calculates the average stats for players who play 24 minutes or more on average per game during the season. The mean and SD values are taken from the script into the Python script to calculate the final Z-scores. 
 
+*Note: The R script is not meant to be used when performing the actual On Fire script, but rather serves as a separate document that can be ran on its own to demonstrate the mathematical concepts and values utilized in the final script. Make sure to download Tidyverse and hoopR if you would like to (mostly) replicate it.* 
+
 # How does the bot work?
 
 This bot is given a unique channel in the Omarball server to post in. Every night at 11:30 PM PST (as generally all NBA games will be done for the day by this point), a BAT file I created is automatically run to activate the scraping and then the bot to post the list of best and worst lines.
@@ -33,6 +35,9 @@ The problematic aspect of not filtering out players with low minutes is primaril
 I find this idea more subject to change (I welcome feedback here!), but my belief is that good stats will be of immense impact for the GM no matter how many minutes they played. Take for example Malik Monk from the Sacramento Kings; he's a player who will often come off the bench and, at times, will play less than 24 minutes. Yet, he can still score with low minutes, which can be seen on Feb 9 2024 where he scored 23 against Denver on 9-13 FG splits as one example. Generally players who can generate stats like this while playing less than 24 is rare, and it's still subject to being outscored by other player lines. However, we want to consider the possibility of lines like Monk's on low minutes and give these lines a chance to shine.
 
 Meanwhile, for "worst" scores with low minutes, as aforementioned it will simply weigh injured players or players who got in tough situations with fouls by too much unless they are filtered out early. In other words, if a player is on IR, they should not be expected to be defined as players to be judged based on their (non-existent) "performance." 
+
+# Will the mean and SDs used for the z-score calculations change in future NBA seasons?
+Probably. Gilani's hoopR package is excellent and you would only need to modify certain arguments such as the year values are obtained from in order to generate new mean and SD values for each season. Ideally I would like to update the calculation values once a year around mid-March when the majority of the regular season is done and teams are beginning to fully tank or shut down players for off-season or pre-playoff rest. 
 
 # Can I run this script for my league's server?
 Sure! This bot doesn't have an OAuth invite link on hand given that it only uses API info for my league, but you can utilize the basic template, create your own Discord bot to host it and things should work the same. Things you would need to specifically do outside of using the basic script would mainly be in setting up a 'config.py' file which includes:
