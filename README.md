@@ -53,4 +53,4 @@ It's a possibility, but more details and personal time are needed here before I 
 - API for pulling season-wide NBA stats provuded through [*hoopR* by Saiem Gilani et al.](https://hoopr.sportsdataverse.org/)
 - Discord bot wrapper for Python provided by [Rapptz et al.](https://github.com/Rapptz/discord.py)
 - FTAR and FGAR concept and formulas provided by [u/DancingWithTheCars](https://www.reddit.com/r/fantasybball/comments/z40qvk/noob_question_on_percentages_for_cat_leagues/ixqfbyx/?context=3&share_id=zgGIC5jyaZA2LIfqls7UV)
-- Omar Uraimov for his help and creating Omarball!
+- [Omar Uraimov](https://github.com/ouraimov) for his help and creating Omarball!
