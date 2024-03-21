@@ -32,7 +32,7 @@ Sure! This bot doesn't have an OAuth invite link on hand given that it only uses
 
 **WARNING: IF you fork and/or host a version of this script on GitHub, DO __NOT__ PLACE YOUR API KEYS AND TOKENS IN THE MAIN SCRIPT! Create a separate config file with the defined API keys included or a VENV file, mark the file to be ignored on commits with .gitignore (along with all PYC files), and DO NOT give out any of these keys.**
 
-In terms of the automation for posting it every night at 11:30 PM PST (or whichever time you prefer), if you just want to host it locally, you can utilize Windows task scheduler to do so. If you're specifically using an Anaconda environment to and host the actual On Fire script, you would create a BAT file with this template after cloning the repo and doing the work in setting up the config:
+In terms of the automation for posting it every night at 11:30 PM PST (or whichever time you prefer), if you just want to host it locally, you can utilize Windows Task Scheduler to do so. If you're specifically using an Anaconda environment to and host the actual On Fire script, you would create a BAT file with this template after cloning the repo and doing the work in setting up the config:
 ```
 call C:\Users\InsertUserNameHere\anaconda3\Scripts\activate.bat
 call conda activate discord_fantasy_bot
@@ -41,7 +41,7 @@ call conda deactivate
 pause
 ```
 
-This will run the script and keep the terminal open to assist in debugging when needed. 
+This will run the script and keep the terminal open to assist in debugging when needed. When the BAT file is ready, point Task Scheduler to the BAT file and schedule it for the time you prefer.
 
 # Will you automate set-up for all leagues and create a invite link for the bot in the future?
 It's a possibility, but more details and personal time are needed here before I can proceed. I would need to specifically consider if there are any potential security concerns with obtaining ESPN cookie and SWID info through user input (this would be through DM if I were to do so). For now, you are free to use the basic template of the script to host it on whichever server you desire.
