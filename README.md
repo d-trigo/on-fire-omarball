@@ -54,7 +54,7 @@ Sure! This bot doesn't have an OAuth invite link on hand given that it only uses
 In terms of the automation for posting it every night at 11:30 PM PST (or whichever time you prefer), if you just want to host it locally, you can utilize Windows Task Scheduler to do so. If you're specifically using an Anaconda environment to and host the actual On Fire script, you would create a BAT file with this template after cloning the repo and doing the work in setting up the config:
 ```
 call C:\Users\InsertUserNameHere\anaconda3\Scripts\activate.bat
-call conda activate discord_fantasy_bot
+call conda activate environment_name
 call python C:\Users\InsertUserNameHere\InsertRepoParentFolderName\omarball-onfire-bot\on_fire.py
 call conda deactivate
 pause
