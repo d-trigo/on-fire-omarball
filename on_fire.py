@@ -20,7 +20,7 @@ next_cursor_page = None
 while True:
     params = {'start_date':today, 'end_date':today, 'per_page':'100'}
     if next_cursor_page:
-        params['cursor'] = next_cursor_page
+        params['cursor'] = next_cursor_page #we get the first page by default, so this won't be added on the first run 
 
     try:
         r = requests.get('https://api.balldontlie.io/v1/stats', headers=config.bdltoken, params=params)
@@ -99,7 +99,7 @@ if mergedpd.empty is False:
     mergedpd['STLZ'] = (((mergedpd['stl']-0.9037216)/0.2925993)*0.80)
     mergedpd['BLKZ'] = (((mergedpd['blk']-0.6413044)/0.5216844)*0.80)
     mergedpd['PTSZ'] = ((mergedpd['pts']-16.192476)/5.956778)
-    mergedpd['FGARZ'] = (((mergedpd['FGAR']-(-0.03505124))/0.65614770)*0.90) #paranthesis fixed?
+    mergedpd['FGARZ'] = (((mergedpd['FGAR']-(-0.03505124))/0.65614770)*0.90)
     mergedpd['FTARZ'] = (((mergedpd['FTAR']-0.02214733)/0.28761030)*0.90)
 
     col_list = list(mergedpd)
