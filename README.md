@@ -71,5 +71,5 @@ It's a possibility, but more details and personal time are needed here before I 
 - API for pulling ESPN fantasy league info provided by [cwendt94](https://github.com/cwendt94/espn-api)
 - API for pulling season-wide NBA stats provided through [*hoopR* by Saiem Gilani et al.](https://hoopr.sportsdataverse.org/)
 - Discord bot wrapper for Python provided by [Rapptz et al.](https://github.com/Rapptz/discord.py)
-- FTAR and FGAR concept and formulas provided by [u/DancingWithTheCars](https://www.reddit.com/r/fantasybball/comments/z40qvk/noob_question_on_percentages_for_cat_leagues/ixqfbyx/?context=3&share_id=zgGIC5jyaZA2LIfqls7UV)
+- FTAR and FGAR concept and formulas provided by [u/DancingWithTheCars](https://www.reddit.com/r/fantasybball/comments/z40qvk/noob_question_on_percentages_for_cat_leagues/ixqfbyx/?context=3)
 - [Omar Uraimov](https://github.com/ouraimov) for his help and creating Omarball!
