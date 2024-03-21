@@ -1,5 +1,5 @@
 from discord.ext import commands
-import config
+import config #create a config file with your relevant keys or in a VENV file and do NOT share them!!!!!!!
 import discord
 import requests
 import pandas as pd
