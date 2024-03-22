@@ -43,6 +43,21 @@ I have applied weights to CATs that have high variance in order to mitigate infl
 # Will the mean and SDs used for the z-score calculations change in future NBA seasons?
 Probably. Gilani's hoopR package is excellent and you would only need to modify certain arguments such as the year values are obtained from in order to generate new mean and SD values for each season. Ideally I would like to update the calculation values once a year around mid-March when the majority of the regular season is done and teams are beginning to fully tank or shut down players for off-season or pre-playoff rest. 
 
+# With the mean and SD values for each category, could I use z scores to calculate the percentile of lines for the day relative to average player lines?
+In most cases, no. The reason why is in regard to the nature of the distributions that you would obtain via the hoopR package (or whichever NBA API package you prefer in Python): much of the distributions, even if you were to control for players who played less than 24 minutes on average per game, are still heavily skewed. Although Z-scores can be calculated for any type of distribution, normal or not, you cannot interpret a percentile value from a Z value calculated for a skewed distribution. 
+
+![image](https://github.com/d-trigo/on-fire-omarball/assets/153132523/cc8ba12c-4286-4d6c-a970-23e24cf72874)
+
+If you want to read more about what you can and can't do with Z scores, I would advise reading this comment thread from r/fantasybball that served as a counter-argument against the metric propsoed by the original poster. Of specific note is a comment here by u/zeros113 in regard to [documentation he wrote](https://github.com/zer2/Fantasy-Basketball--in-progress-/blob/main/readme.md) on the broader idea of z scores in fantasy and why, vice versa, we shouldn't try to convert the distributions (such as through log transformations) and attempt to make it standard in this case:
+```
+I wrote the readme, and agree fully with your explanation for why people are getting confused here.
+
+The Z-score is only "valid" for calculating percentiles based on the standard normal table under the condition that data is normally distributed. However, that has no bearing for its use in other contexts. The argument I presented in the readme never assumes that the underlying data is normally distributed
+
+In addition to being unnecessary, artificially transforming non-normal distributions into normal distributions can also cause problems. Scores should always be linearly additive, that is, two players who score two 3-pointers each should be exactly as valuable as one player who scores zero and one who scores four. If we warp the data to make it fit a normal distribution, that may no longer be true, which is clearly undesirable for a value-quantification system
+```
+
+
 # Can I run this script for my league's server?
 Sure! This bot doesn't have an OAuth invite link on hand given that it only uses API info for my league, but you can utilize the basic template, create your own Discord bot to host it and things should work the same. Things you would need to specifically do outside of using the basic script would mainly be in setting up a 'config.py' file which includes:
 - Your own Ball Don't Lie API key on the BDL website (*API access is free for scraping data for the current season!*)
