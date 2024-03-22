@@ -161,3 +161,6 @@ cython_debug/
 
 #misc. files
 config.py
+
+#test environments
+bot_tests/
