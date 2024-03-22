@@ -73,7 +73,7 @@ def printout(bdldf, colmax):
     alllines = []
     for i in range (0, colmax):
         if sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) >= 3: #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
-            tripledubline = str('3️⃣🚀')
+            tripledubline = str(' 3️⃣🚀')
         else:
             tripledubline = None 
         line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts'].iloc[i]} PTS, {bdldf['reb'].iloc[i]} REB, {bdldf['ast'].iloc[i]} AST, {bdldf['fg3m'].iloc[i]} 3PM, {bdldf['stl'].iloc[i]} STL, {bdldf['blk'].iloc[i]} BLK, and {bdldf['turnover'].iloc[i]} TO on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT splits")
