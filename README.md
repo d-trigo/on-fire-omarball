@@ -32,7 +32,7 @@ The problematic aspect of not filtering out players with low minutes is primaril
 2) Even when not considering players who DNP in a game, there's other factors which make it risky to include players who played between 1-20 minutes. For example, if a player fouls out early or picks up a decent portion of fouls, their stats will, again, be considered deflated compared to other players. Injuries also remain key to consider: a player might get injured only a couple minutes after they start playing and then be forced to miss the game. We avoid low z-score situations making the cut-off for 24 minutes too in this case.
 
 # Why not use the same filter on the best lines section for consistency?
-I find this idea more subject to change (I welcome feedback here!), but my belief is that good stats will be of immense impact for the GM no matter how many minutes they played. Take for example Malik Monk from the Sacramento Kings; he's a player who will often come off the bench and, at times, will play less than 24 minutes. Yet, he can still score with low minutes, which can be seen on Feb 9 2024 where he scored 23 against Denver on 9-13 FG splits as one example. Generally players who can generate stats like this while playing less than 24 is rare, and it's still subject to being outscored by other player lines. However, we want to consider the possibility of lines like Monk's on low minutes and give these lines a chance to shine.
+I find this idea more subject to change (I welcome feedback here!), but my belief is that good stats will be of immense impact for the GM no matter how many minutes they played. Take for example Malik Monk from the Sacramento Kings; he's a player who will often come off the bench and, at times, will play less than 24 minutes. Yet, he can still score with low minutes, which can be seen on Feb 9 2024 where he scored 23 against Denver on 9-13 FG splits as one example. Generally players who can generate stats like this while playing less than 24 is rare, and it's still subject to being outscored by other player lines. However, we want to consider the possibility of lines like Monk's on low minutes and give these lines a chance to shine. Of course, a concern is that players with low turnovers get inflated; this should be mitigated as turnovers are effectively "punted" as they are weighed by -0.25 (see below for info on other relevant weights). 
 
 Meanwhile, for "worst" scores with low minutes, as aforementioned it will simply weigh injured players or players who got in tough situations with fouls by too much unless they are filtered out early. In other words, if a player is on IR, they should not be expected to be defined as players to be judged based on their (non-existent) "performance." 
 
@@ -48,6 +48,10 @@ Sure! This bot doesn't have an OAuth invite link on hand given that it only uses
 - Your own Ball Don't Lie API key on the BDL website (*API access is free for scraping data for the current season!*)
 - Your ESPN league ID + your cookie and SWID if in a private league (*find them through here: https://chromewebstore.google.com/detail/espn-cookie-finder/oapfffhnckhffnpiophbcmjnpomjkfcj*)
 - Your own Discord bot token (*check out the Discord.py quickstart if you want to get an idea of how to start up and host a bot https://discordpy.readthedocs.io/en/stable/*)
+- Relevant Python packages, including:
+    - Pandas
+    - Discord.py
+    - ESPN API 
 
 **WARNING: IF you fork and/or host a version of this script on GitHub, DO __NOT__ PLACE YOUR API KEYS AND TOKENS IN THE MAIN SCRIPT! Create a separate config file with the defined API keys included or a VENV file, mark the file to be ignored on commits with .gitignore (along with all PYC files), and DO NOT give out any of these keys.**
 
