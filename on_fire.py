@@ -115,7 +115,7 @@ def printout(bdldf, colmax):
 if mergedpd.empty is False:
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
-    mergedpd = mergedpd.dropna()
+    mergedpd = mergedpd.dropna(subset=["GM"])
 
 
     mergedpd['FGAR'] = (mergedpd['fgm']-(0.4834302*mergedpd['fga'])) 
