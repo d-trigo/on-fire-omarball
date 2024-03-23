@@ -69,6 +69,36 @@ df2['Player'] = df2['Player'].str.replace('Player(', '')
 df2['Player'] = df2['Player'].str.replace(')', '')
 playerdict = df2.set_index('Player')['GM'].to_dict()
 
+#create emoji criteria for "mindblowing stats"
+def zcheck(bdldf, zcolumn, x):
+    if bdldf[zcolumn].iloc[x] >= 3.50:
+        return ' 🤯'
+    else:
+        return ''
+
+def stlcheck(bdldf, stlcol, x):
+    if bdldf[stlcol].iloc[x] >= 8.46557978778486: #the cutoff for this is 4 STLs minimum
+        return ' 🤯'
+    else:
+        return ''
+    
+def volcheck(bdldf, zcolumn, x):
+    if bdldf[zcolumn].iloc[x] > 3.25:
+        return ' 🎯'
+    elif bdldf[zcolumn].iloc[x] < -3.25:
+        return ' 🧱'
+    elif bdldf[zcolumn].iloc[x] == 0:
+        return ''  
+    else:
+        return ''
+    
+def tocheck(bdldf, tozcolumn, x):
+    if bdldf[tozcolumn].iloc[x] <= -1.08150924234275: #the cutoff for this is 5 TOs minimum 
+        return ' 🤮 '
+    else:
+        return ' '
+    
+
 def printout(bdldf, colmax):
     alllines = []
     for i in range (0, colmax):
@@ -76,10 +106,10 @@ def printout(bdldf, colmax):
             tripledubline = str(' 3️⃣🚀')
         else:
             tripledubline = None 
-        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts'].iloc[i]} PTS, {bdldf['reb'].iloc[i]} REB, {bdldf['ast'].iloc[i]} AST, {bdldf['fg3m'].iloc[i]} 3PM, {bdldf['stl'].iloc[i]} STL, {bdldf['blk'].iloc[i]} BLK, and {bdldf['turnover'].iloc[i]} TO on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT splits")
+        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]} PTS{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]} REB{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]} AST{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]} 3PM{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]} STL{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]} BLK{zcheck(bdldf, 'TOVZ', i)}, and {bdldf['turnover'].iloc[i]} TO{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits")
         alllines.append(line)
     printed = "\n".join([str(playerline) for playerline in alllines])
-    print(printed)
+    print(printed) 
     return printed
         
 if mergedpd.empty is False:
@@ -105,6 +135,22 @@ if mergedpd.empty is False:
     col_list = list(mergedpd)
     zcols = col_list[55:64]
     mergedpd['ZSUM'] = mergedpd[zcols].sum(axis=1)
+
+    #convert score cols to strings; this will be passed into the string while allowing us to keep int versions for checking for a triple dub 
+    mergedpd['pts_s'] = mergedpd['pts'].astype(str)
+    mergedpd['blk_s'] = mergedpd['blk'].astype(str)
+    mergedpd['reb_s'] = mergedpd['reb'].astype(str)
+    mergedpd['ast_s'] = mergedpd['ast'].astype(str)
+    mergedpd['stl_s'] = mergedpd['stl'].astype(str)
+    mergedpd['pts_s'] = mergedpd['pts'].astype(str)
+    mergedpd['fg3m_s'] = mergedpd['fg3m'].astype(str)
+
+    mergedpd.loc[mergedpd['REBZ'] > 2.5, 'reb_s'] = '**' + mergedpd['reb_s'] + '**'
+    mergedpd.loc[mergedpd['FG3Z'] > 2.5, 'fg3m_s'] = '**' + mergedpd['fg3m_s'] + '**'
+    mergedpd.loc[mergedpd['ASTZ'] > 2.5, 'ast_s'] = '**' + mergedpd['ast_s'] + '**'
+    mergedpd.loc[mergedpd['BLKZ'] > 2.5, 'blk_s'] = '**' + mergedpd['blk_s'] + '**'
+    mergedpd.loc[mergedpd['PTSZ'] > 2.5, 'pts_s'] = '**' + mergedpd['pts_s'] + '**'
+    mergedpd.loc[mergedpd['STLZ'] > 2.5, 'stl_s'] = '**' + mergedpd['stl_s'] + '**'
 
 
     top = mergedpd.sort_values(by='ZSUM', ascending=False)
