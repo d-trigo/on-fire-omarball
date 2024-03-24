@@ -163,10 +163,7 @@ if mergedpd.empty is False:
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
     bottom['min'] = bottom['min'].astype('int64')
     bottom = bottom.query('min >= 24')
-    if len(bottom.index) < 20:
-        bottomprintout = printout(bottom, 5)
-    else:
-        bottomprintout = printout(bottom, 10)
+    bottomprintout = printout(bottom, 5)
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
