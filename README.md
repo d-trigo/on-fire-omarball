@@ -44,7 +44,7 @@ The scraping aspect utilizes the ESPN API package to fetch rosters for each Omar
 
 
 <!-- TOC --><a name="why-did-i-use-espn-api-info"></a>
-# Why did I use ESPN API info?
+# Why did you use ESPN API info?
 
 There are two reasons as to why this bot does this, both ultimately in order to differentiate itself in purpose and functionality from Reddit posts with the best lines:
 1) Being able to hook ESPN API info allows the bot to comprehend who exactly is reaping the best lines of the day. For example, if we didn't have this info, the bot could still understand Steph having the best line of the night with a 50-bomb, but it's not going to know what GM is reaping Steph's 50-bomb. In other words, this can showcase which teams are dominating each day in terms of getting the best lines or also show when there's competitive nights between all GMs, ultimately adding a personal element of analysis relevant to the Omarball league.
