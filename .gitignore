@@ -164,3 +164,4 @@ config.py
 
 #test environments
 bot_tests/
+*.csv
