@@ -106,7 +106,7 @@ def printout(bdldf, colmax):
             tripledubline = str(' 3️⃣🚀')
         else:
             tripledubline = None 
-        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]} PTS{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]} REB{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]} AST{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]} 3PM{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]} STL{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]} BLK{zcheck(bdldf, 'TOVZ', i)}, and {bdldf['turnover'].iloc[i]} TO{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits")
+        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]} PTS{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]} REB{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]} AST{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]} 3PM{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]} STL{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]} BLK{zcheck(bdldf, 'TOVZ', i)}, and {bdldf['turnover'].iloc[i]} TO{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
         alllines.append(line)
     printed = "\n".join([str(playerline) for playerline in alllines])
     print(printed) 
@@ -162,7 +162,7 @@ if mergedpd.empty is False:
     #finding worst lines 
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
     bottom['min'] = bottom['min'].astype('int64')
-    bottom = bottom.query('min >= 24')
+    bottom = bottom.query('min >= 14')
     bottomprintout = printout(bottom, 5)
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
