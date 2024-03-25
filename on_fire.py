@@ -106,7 +106,7 @@ def printout(bdldf, colmax):
             tripledubline = str(' 3️⃣🚀')
         else:
             tripledubline = None 
-        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]} PTS{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]} REB{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]} AST{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]} 3PM{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]} STL{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]} BLK{zcheck(bdldf, 'TOVZ', i)}, and {bdldf['turnover'].iloc[i]} TO{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
+        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]} PTS{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]} REB{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]} AST{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]} 3PM{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]} STL{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]} BLK{zcheck(bdldf, 'BLKZ', i)}, and {bdldf['turnover'].iloc[i]} TO{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
         alllines.append(line)
     printed = "\n".join([str(playerline) for playerline in alllines])
     print(printed) 
