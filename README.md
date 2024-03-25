@@ -26,7 +26,7 @@
 
 This project is a Discord bot developed for my local fantasy league (Omarball) to be used in the league's Discord server. It was inspired by r/fantasybball posts from [u/nerdyog15](https://www.reddit.com/r/fantasybball/comments/18sl3ie/top_10_player_appreciation_anything_goes/) where each post would sum the best and worst lines of the day. 
 
-![image](https://github.com/d-trigo/on-fire-omarball/assets/153132523/b889428a-592e-4db3-9fa2-d80aeff8ac49)
+![on fire updated example](https://github.com/d-trigo/on-fire-omarball/assets/153132523/ba7ad7b9-06a5-497a-8450-bfc234be93c8)
 
 
 <!-- TOC --><a name="what-packages-and-apis-are-used-in-this-project"></a>
