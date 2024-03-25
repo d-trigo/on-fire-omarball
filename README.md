@@ -103,14 +103,15 @@ Sure! This bot doesn't have an OAuth invite link on hand given that it only uses
 - Your own Ball Don't Lie API key on the BDL website (*API access is free for scraping data for the current season!*)
 - Your ESPN league ID + your cookie and SWID if in a private league (*find them through here: https://chromewebstore.google.com/detail/espn-cookie-finder/oapfffhnckhffnpiophbcmjnpomjkfcj*)
 - Your own Discord bot token (*check out the Discord.py quickstart if you want to get an idea of how to start up and host a bot https://discordpy.readthedocs.io/en/stable/*)
-- Relevant Python packages, including:
+
+You would also need to download relevant Python packages via `pip` or otherwise, including:
     - Pandas
     - Discord.py
     - ESPN API 
 
 **WARNING: IF you fork and/or host a version of this script on GitHub, DO __NOT__ PLACE YOUR API KEYS AND TOKENS IN THE MAIN SCRIPT! Create a separate config file with the defined API keys included or a VENV file, mark the file to be ignored on commits with .gitignore (along with all PYC files), and DO NOT give out any of these keys.**
 
-In terms of the automation for posting it every night at 11:30 PM PST (or whichever time you prefer), if you just want to host it locally, you can utilize Windows Task Scheduler to do so. If you're specifically using an Anaconda environment to and host the actual On Fire script, you would create a BAT file with this template after cloning the repo and doing the work in setting up the config:
+In terms of the automation for posting it every night at 11:30 PM PST (or whichever time you prefer), if you just want to host it locally, you can utilize Windows Task Scheduler to do so. If you're specifically using an Anaconda environment to host the actual On Fire script, you would create a BAT file with this template after cloning the repo and doing the work in setting up the config:
 ```
 call C:\Users\InsertUserNameHere\anaconda3\Scripts\activate.bat
 call conda activate environment_name
