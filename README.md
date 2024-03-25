@@ -7,6 +7,7 @@
 - [What is this?](#what-is-this)
 - [What packages and APIs are used in this project?](#what-packages-and-apis-are-used-in-this-project)
 - [How does the bot work?](#how-does-the-bot-work)
+- [What do the emoji mean?](#what-do-the-emoji-mean)
 - [Why did I use ESPN API info?](#why-did-i-use-espn-api-info)
 - [Why filter out players who played less than 24 min. for the worst lines printout?](#why-filter-out-players-who-played-less-than-24-min-for-the-worst-lines-printout)
 - [Why not use the same filter on the best lines section for consistency?](#why-not-use-the-same-filter-on-the-best-lines-section-for-consistency)
@@ -25,6 +26,9 @@
 
 This project is a Discord bot developed for my local fantasy league (Omarball) to be used in the league's Discord server. It was inspired by r/fantasybball posts from [u/nerdyog15](https://www.reddit.com/r/fantasybball/comments/18sl3ie/top_10_player_appreciation_anything_goes/) where each post would sum the best and worst lines of the day. 
 
+![image](https://github.com/d-trigo/on-fire-omarball/assets/153132523/b889428a-592e-4db3-9fa2-d80aeff8ac49)
+
+
 <!-- TOC --><a name="what-packages-and-apis-are-used-in-this-project"></a>
 # What packages and APIs are used in this project?
 
@@ -40,6 +44,14 @@ This bot is given a unique channel in the Omarball server to post in. Every nigh
 The scraping aspect utilizes the ESPN API package to fetch rosters for each Omarball GM along with the name of the GM. Once player lines are obtained via Ball Don't Lie, the script maps GMs who own the respective players into the dataframe. After scraping is completed, z scores are calculated for each player line using mean and SD s obtained for the NBA categories on a season-wide basis. With the z-scores, two printouts are created: one is for the best lines with the BDL DF sorted by descending order in regard to the 'ZSUM' (or, sum of a player's z scores across all categories) and another is for the worst lines with the same DF sorted by ascending order. Once these printouts are created, the script moves into the Discord bot phase where it will make two separate posts, one for the best lines and another for the worst lines.
 
 *Note: How many lines the bot will post depends on the amount of lines available and, in turn, how many games were played for the day. If there are less than 20 lines available once unrostered players are dropped (and, for the worst lines, all players who played less than 24 min. are also dropped), the script will shorten the posts to provide only the best and worst 5 five lines. Otherwise, it will post the best and worst 10 lines.*
+
+<!-- TOC --><a name="what-do-the-emoji-mean"></a>
+# What do the emoji mean?
+Here's a quick legend for the emoji:
+- 🤯 refers to a fantastic stat; players earn this emoji for a specific category if they have a Z score of *3.5* or above when it comes to counting stats (points, rebs, asts, blocks, steals)
+- 🤮 refers to very high turnovers; the cutoff for this emoji is *5* turnovers minimum.
+- 🎯 refers to great accuracy relative to shooting volume; players earn this emoji if they have a Z score of *3.25* or above when it comes to volume stats (fg%, ft%)
+- 🧱 is vice versa and refers to awful accuracy relative to volume: players earn this emoji if they have a Z score of *-3.25* or below for volume stats 
 
 
 
