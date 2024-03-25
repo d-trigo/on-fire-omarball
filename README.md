@@ -48,11 +48,13 @@ The scraping aspect utilizes the ESPN API package to fetch rosters for each Omar
 <!-- TOC --><a name="what-do-the-emoji-mean"></a>
 # What do the emoji mean?
 Here's a quick legend for the emoji:
-- 🤯 refers to a fantastic stat; players earn this emoji for a specific category if they have a Z score of *3.5* or above when it comes to counting stats (points, rebs, asts, blocks, steals)
-- 🤮 refers to very high turnovers; the cutoff for this emoji is *5* turnovers minimum.
+- 🤯 refers to a fantastic stat; players earn this emoji for a specific category if they have a Z score of *3.5* or above when it comes to counting stats (points, rebs, asts, blocks)
+    - This also applies to steals, but here, the Z cutoff is about *8.4655* (or, *four* steals). 
+- 🤮 refers to very high turnovers; the cutoff for this emoji is a Z score of *-1.08151* (or, *five* turnovers minimum).
 - 🎯 refers to great accuracy relative to shooting volume; players earn this emoji if they have a Z score of *3.25* or above when it comes to volume stats (fg%, ft%)
 - 🧱 is vice versa and refers to awful accuracy relative to volume: players earn this emoji if they have a Z score of *-3.25* or below for volume stats 
 
+*Note: You might notice that the turnover and steal criteria don't have the same Z cutoff compared other categories like points and rebounds: admittedly this is what we consider an arbitrarily decided cutoff. With fantasy, I tried to choose cutoffs based on which kind of line would make a GM react strongly (positively or negatively), with five turnovers and four steals generally being the case. If you were to determine what was an "outlier" (or absolutely great/terrible value) in an actual study, do **not** use arbitrary cut-offs.*
 
 
 <!-- TOC --><a name="why-did-i-use-espn-api-info"></a>
