@@ -105,9 +105,9 @@ Sure! This bot doesn't have an OAuth invite link on hand given that it only uses
 - Your own Discord bot token (*check out the Discord.py quickstart if you want to get an idea of how to start up and host a bot https://discordpy.readthedocs.io/en/stable/*)
 
 You would also need to download relevant Python packages via `pip` or otherwise, including:
-    - Pandas
-    - Discord.py
-    - ESPN API 
+- Pandas
+- Discord.py
+- ESPN API 
 
 **WARNING: IF you fork and/or host a version of this script on GitHub, DO __NOT__ PLACE YOUR API KEYS AND TOKENS IN THE MAIN SCRIPT! Create a separate config file with the defined API keys included or a VENV file, mark the file to be ignored on commits with .gitignore (along with all PYC files), and DO NOT give out any of these keys.**
 
