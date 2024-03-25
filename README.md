@@ -54,7 +54,7 @@ Here's a quick legend for the emoji:
 - 🎯 refers to great accuracy relative to shooting volume; players earn this emoji if they have a Z score of *3.25* or above when it comes to volume stats (fg%, ft%)
 - 🧱 is vice versa and refers to awful accuracy relative to volume: players earn this emoji if they have a Z score of *-3.25* or below for volume stats 
 
-*Note: You might notice that the turnover and steal criteria don't have the same Z cutoff compared other categories like points and rebounds: admittedly this is an arbitrarily decided cutoff. With fantasy, I tried to choose cutoffs based on which kind of line would make a GM react strongly (positively or negatively), with five turnovers and four steals generally being the case. If you were to determine what was an "outlier" (or absolutely great/terrible value) in an actual study such as one for sports analytics, do **not** use arbitrary cut-offs.*
+*Note: You might notice that the turnover and steal criteria don't have the same Z cutoff compared other categories like points and rebounds: admittedly in these cases these are arbitrarily decided cutoffs. With fantasy, I tried to choose cutoffs based on which kind of line would make a GM react strongly (positively or negatively), with five turnovers and four steals generally being the case. If you were to determine what was an "outlier" (or absolutely great/terrible value) in an actual study such as one for sports analytics and were specifically using Z scores, do **not** use arbitrary cut-offs.*
 
 
 <!-- TOC --><a name="why-did-i-use-espn-api-info"></a>
