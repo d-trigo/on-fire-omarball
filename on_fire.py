@@ -106,7 +106,7 @@ def printout(bdldf, colmax):
             tripledubline = str(' 3️⃣🚀')
         else:
             tripledubline = None 
-        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]} PTS{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]} REB{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]} AST{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]} 3PM{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]} STL{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]} BLK{zcheck(bdldf, 'BLKZ', i)}, and {bdldf['turnover'].iloc[i]} TO{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
+        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]}{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]}{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]}{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]}{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]}{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]}{zcheck(bdldf, 'blk', i)}, and {bdldf['tov_s'].iloc[i]}{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
         alllines.append(line)
     printed = "\n".join([str(playerline) for playerline in alllines])
     print(printed) 
@@ -137,13 +137,14 @@ if mergedpd.empty is False:
     mergedpd['ZSUM'] = mergedpd[zcols].sum(axis=1)
 
     #convert score cols to strings; this will be passed into the string while allowing us to keep int versions for checking for a triple dub 
-    mergedpd['pts_s'] = mergedpd['pts'].astype(str)
-    mergedpd['blk_s'] = mergedpd['blk'].astype(str)
-    mergedpd['reb_s'] = mergedpd['reb'].astype(str)
-    mergedpd['ast_s'] = mergedpd['ast'].astype(str)
-    mergedpd['stl_s'] = mergedpd['stl'].astype(str)
-    mergedpd['pts_s'] = mergedpd['pts'].astype(str)
-    mergedpd['fg3m_s'] = mergedpd['fg3m'].astype(str)
+    mergedpd['pts_s'] = mergedpd['pts'].astype(str) + ' PTS'
+    mergedpd['blk_s'] = mergedpd['blk'].astype(str) + ' BLK'
+    mergedpd['reb_s'] = mergedpd['reb'].astype(str) + ' REB'
+    mergedpd['ast_s'] = mergedpd['ast'].astype(str) + ' AST'
+    mergedpd['stl_s'] = mergedpd['stl'].astype(str) + ' STL'
+    mergedpd['pts_s'] = mergedpd['pts'].astype(str) + ' PTS'
+    mergedpd['fg3m_s'] = mergedpd['fg3m'].astype(str) + ' 3PM'
+    mergedpd['tov_s'] = mergedpd['turnover'].astype(str) + ' TO'
 
     mergedpd.loc[mergedpd['REBZ'] > 2.5, 'reb_s'] = '**' + mergedpd['reb_s'] + '**'
     mergedpd.loc[mergedpd['FG3Z'] > 2.5, 'fg3m_s'] = '**' + mergedpd['fg3m_s'] + '**'
