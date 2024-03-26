@@ -7,6 +7,7 @@ from datetime import date
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2024, espn_s2=config.espn_s2config, swid=config.swid)
+#importing line module
 import lines
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
@@ -15,14 +16,15 @@ today = date.today()
 yeardate = today.strftime("%Y-%m-%d")
 monthdate = today.strftime("%m-%d")
 
-
+#create list for all ball don't lie (BDL) json scrape lists to go into
 jsonlist = []
 next_cursor_page = None
 
+#create scraping loop
 while True:
     params = {'start_date':yeardate, 'end_date':yeardate, 'per_page':'100'}
     if next_cursor_page:
-        params['cursor'] = next_cursor_page #we get the first page by default, so this won't be added on the first run 
+        params['cursor'] = next_cursor_page #we get the first page by default, so this won't be added on the first run. later runs get the cursor when applicable
 
     try:
         r = requests.get('https://api.balldontlie.io/v1/stats', headers=config.bdltoken, params=params)
@@ -34,33 +36,33 @@ while True:
     rjson = r.json()
     jsonlist.append(rjson)
 
-    next_cursor_page = rjson['meta'].get('next_cursor', None)
+    next_cursor_page = rjson['meta'].get('next_cursor', None) #if next cursor number exists, get next cursor
     if not next_cursor_page:
         print('There are no more pages available. All games for specified day logged. Check the "mergedpd" dataframe for all lines.')
         break
 
 dfs = []
 for i, jsons in enumerate(jsonlist):
-    df = pd.json_normalize(jsons, record_path='data')
+    df = pd.json_normalize(jsons, record_path='data') #normalize all jsons into dfs
     dfs.append(df)
 
 if len(dfs) > 1:
-    mergedpd = pd.concat(dfs, ignore_index=True)
+    mergedpd = pd.concat(dfs, ignore_index=True) 
 else:
-    mergedpd = dfs[0]
+    mergedpd = dfs[0] #use for low volume games like in season tournament days
     
 
 gmlist = []
 for i in range(0, 12):
     gm = league.teams[i]
-    gmlist.append(gm)
+    gmlist.append(gm) #get all gms 
 
 playerslist = []
-for i, gms in enumerate(gmlist):
+for i in enumerate(gmlist):
     players = league.teams[i].roster #get roster via index obtained with enumerate
     playerslist.append(players) 
     
-df = pd.DataFrame((zip(gmlist, playerslist)), #don't think we needed list in the first place. 
+df = pd.DataFrame((zip(gmlist, playerslist)), 
     columns = ['GM', 'Player'])
 
 df2 = df.explode('Player')
@@ -135,7 +137,7 @@ if mergedpd.empty is False:
     mergedpd['FTARZ'] = (((mergedpd['FTAR']-0.02214733)/0.28761030)*0.90)
 
     col_list = list(mergedpd)
-    zcols = col_list[55:64]
+    zcols = col_list[55:64] #rebz through ftarz
     mergedpd['ZSUM'] = mergedpd[zcols].sum(axis=1)
 
     #convert score cols to strings; this will be passed into the string while allowing us to keep int versions for checking for a triple dub 
@@ -165,7 +167,7 @@ if mergedpd.empty is False:
     #finding worst lines 
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
     bottom['min'] = bottom['min'].astype('int64')
-    bottom = bottom.query('min >= 14')
+    bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
     bottomprintout = printout(bottom, 5)
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
