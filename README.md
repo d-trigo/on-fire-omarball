@@ -46,13 +46,17 @@ The scraping aspect utilizes the ESPN API package to fetch rosters for each Omar
 *Note: How many lines the bot will post depends on the amount of lines available and, in turn, how many games were played for the day. If there are less than 20 lines available once unrostered players are dropped (and, for the worst lines, all players who played less than 24 min. are also dropped), the script will shorten the posts to provide only the best and worst 5 five lines. Otherwise, it will post the best and worst 10 lines.*
 
 <!-- TOC --><a name="what-do-the-emoji-mean"></a>
-# What do the emoji mean?
+# What do the emoji and bold text mean?
 Here's a quick legend for the emoji:
+- **Bolded** stats refer to a great counting stat that had a z score of 2.5 or above.
+    - Note: "Counting" stats refer to categories where you win simply by having a higher amount of them for the week: these include more          points, rebounds, assists, blocks, and steals.
 - 🤯 refers to a fantastic stat; players earn this emoji for a specific category if they have a Z score of *3.5* or above when it comes to counting stats (points, rebs, asts, blocks)
     - This also applies to steals, but here, the Z cutoff is about *8.4655* (or, *four* steals). 
 - 🤮 refers to very high turnovers; the cutoff for this emoji is a Z score of *-1.08151* (or, *five* turnovers minimum).
 - 🎯 refers to great accuracy relative to shooting volume; players earn this emoji if they have a Z score of *3.25* or above when it comes to volume stats (fg%, ft%)
-- 🧱 is vice versa and refers to awful accuracy relative to volume: players earn this emoji if they have a Z score of *-3.25* or below for volume stats 
+- 🧱 is vice versa and refers to awful accuracy relative to volume: players earn this emoji if they have a Z score of *-3.25* or below for volume stats
+- 3️⃣🚀 means a player got a triple double!
+    -A "triple double" (also known as triple dub informally) refers to when a player earns double-digit stats in at least three counting         stat categories during a game. For example, if a player were to earn at least *10* points, *10* rebounds, and *10* assists, they would      earn a triple double.  
 
 *Note: You might notice that the turnover and steal criteria don't have the same Z cutoff compared other categories like points and rebounds: admittedly in these cases these are arbitrarily decided cutoffs. With fantasy, I tried to choose cutoffs based on which kind of line would make a GM react strongly (positively or negatively), with five turnovers and four steals generally being the case. If you were to determine what was an "outlier" (or absolutely great/terrible value) in an actual study such as one for sports analytics and were specifically using Z scores, do **not** use arbitrary cut-offs.*
 
