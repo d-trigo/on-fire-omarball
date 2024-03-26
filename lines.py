@@ -45,7 +45,7 @@ def worstintro(todaysdate): #more to be added here
     elif todaysdate == '1-01':
         return 'Unfortunately, some are still feeling the effects of all that champagne...here\'s the ones who are still in last year:'
     elif todaysdate == '11-27':
-        return 'Unfortunately, just like your aunt\'s asparagus, some players were a bit overcooked on the court...here\'s who looked like a headless 🦃 on the court:'
+        return 'Unfortunately, just like your aunt\'s asparagus, some players were a bit overcooked...here\'s who looked like a headless 🦃 on the court:'
     elif todaysdate == '02-13': #meant for last games before all star break, will change date when i found out correct day before break
         return 'Unfortunately, some players seem to already be playing like it\'s the All-Star Game...here\'s the ones who were on 🥶 tonight:'
     else:
@@ -55,14 +55,14 @@ def worstintro(todaysdate): #more to be added here
 
 #use tests to validate holiday posts:
 
-yeardate = day.strftime("%Y-%m-%d")
-
-christmasdaytest = date.fromisoformat('2024-12-25')
-christmasdaytest = christmasdaytest.strftime("%m-%d")
-
-
-halloweentest = date.fromisoformat('2024-10-31')
-halloweentest = halloweentest.strftime("%m-%d")
-
-thanksgivingtest = date.fromisoformat('2024-11-27')
-thanksgivingtest = thanksgivingtest.strftime("%m-%d")
+if __name__=="__main__":    
+    christmasdaytest = date.fromisoformat('2024-12-25')
+    christmasdaytest = christmasdaytest.strftime("%m-%d")
+    
+    halloweentest = date.fromisoformat('2024-10-31')
+    halloweentest = halloweentest.strftime("%m-%d")
+    
+    thanksgivingtest = date.fromisoformat('2024-11-27')
+    thanksgivingtest = thanksgivingtest.strftime("%m-%d")
+    
+    print(f"{intro(thanksgivingtest)}\ninsert printout here\n{worstintro(thanksgivingtest)}\ninsert bottom printout here")
