@@ -7,18 +7,20 @@ from datetime import date
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2024, espn_s2=config.espn_s2config, swid=config.swid)
+import lines
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
 #get date
 today = date.today()
-today = today.strftime("%Y-%m-%d")
+yeardate = today.strftime("%Y-%m-%d")
+monthdate = today.strftime("%m-%d")
 
 
 jsonlist = []
 next_cursor_page = None
 
 while True:
-    params = {'start_date':today, 'end_date':today, 'per_page':'100'}
+    params = {'start_date':yeardate, 'end_date':yeardate, 'per_page':'100'}
     if next_cursor_page:
         params['cursor'] = next_cursor_page #we get the first page by default, so this won't be added on the first run 
 
@@ -176,7 +178,6 @@ async def on_ready():
     if mergedpd.empty is True:
         await channel.send("If you're seeing this message, On Fire did not retrieve any lines for today. This could be because there were no games or something wrong happened while scraping. If it's the latter, please contact On Fire's owner!")
     else:
-        await channel.send("Another day of Omarball, another set of All-Star lines! Let's see who was on 🔥 tonight for {}:\n{}".format(today, topprintout))
-        await channel.send("Of course, not everyone can be a winner...here's who was on 🥶 tonight:\n{}".format(bottomprintout))
-
+        await channel.send(f"{lines.intro(monthdate)}\n{topprintout}")
+        await channel.send(f"{lines.worstintro(monthdate)}\n{bottomprintout}")
 bot.run(config.discord_token)
