@@ -59,8 +59,8 @@ for i in range(0, 12):
 
 playerslist = []
 for i in range(len(gmlist)):
-    players = league.teams[i].roster #get roster via index obtained with enumerate
-    playerslist.append(players) 
+    players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
+    playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
     
 df = pd.DataFrame((zip(gmlist, playerslist)), 
     columns = ['GM', 'Player'])
