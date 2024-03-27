@@ -58,7 +58,7 @@ for i in range(0, 12):
     gmlist.append(gm) #get all gms 
 
 playerslist = []
-for i in enumerate(gmlist):
+for i in range(len(gmlist)):
     players = league.teams[i].roster #get roster via index obtained with enumerate
     playerslist.append(players) 
     
