@@ -52,17 +52,14 @@ else:
     mergedpd = dfs[0] #use for low volume games like in season tournament days
     
 
-gmlist = []
-for i in range(0, 12):
-    gm = league.teams[i]
-    gmlist.append(gm) #get all gms 
+gms = league.teams #fetch all team names
 
 playerslist = []
-for i in range(len(gmlist)):
+for i in range(len(gms)):
     players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
     playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
     
-df = pd.DataFrame((zip(gmlist, playerslist)), 
+df = pd.DataFrame((zip(gms, playerslist)), 
     columns = ['GM', 'Player'])
 
 df2 = df.explode('Player')
