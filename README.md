@@ -8,6 +8,7 @@
 - [What packages and APIs are used in this project?](#what-packages-and-apis-are-used-in-this-project)
 - [How does the bot work?](#how-does-the-bot-work)
 - [What do the emoji mean?](#what-do-the-emoji-mean)
+- [Can players only get great emoji if they show up in the best lines list (and vice versa?)](#can-players-only-get-great-emoji-if-they-show-up-in-the-best-lines-list-and-vice-versa)
 - [Why did I use ESPN API info?](#why-did-i-use-espn-api-info)
 - [Why filter out players who played less than 24 min. for the worst lines printout?](#why-filter-out-players-who-played-less-than-24-min-for-the-worst-lines-printout)
 - [Why not use the same filter on the best lines section for consistency?](#why-not-use-the-same-filter-on-the-best-lines-section-for-consistency)
@@ -60,6 +61,10 @@ Here's a quick legend for the emoji:
 
 *Note: You might notice that the turnover and steal criteria don't have the same Z cutoff compared to other categories like points and rebounds: admittedly in these cases these are arbitrarily decided cutoffs. With fantasy, I tried to choose cutoffs based on which kind of line would make a GM react strongly (positively or negatively), with five turnovers and four steals generally being the case. If you were to determine what was an "outlier" (or absolutely great/terrible value) in an actual study such as one for sports analytics and were specifically using Z scores, do **not** use arbitrary cut-offs.*
 
+<!-- TOC --><a name="can-players-only-get-great-emoji-if-they-show-up-in-the-best-lines-list-and-vice-versa"></a>
+# Can players only get great emoji if they show up in the best lines list (and vice versa?)
+
+No. The best and worst lines lists are sorted by an overall `zsum`, and all other stat calculations attached to the emoji (and bold text) are done on a per-category basis. This could mean that even if Giannis went 1/6 from the free throw line and got a "🧱" emoji due to awful accuracy, he could still have one of the best lines of the night due to his other categories by having plenty of points, rebounds and assists. 
 
 <!-- TOC --><a name="why-did-i-use-espn-api-info"></a>
 # Why did you use ESPN API info?
