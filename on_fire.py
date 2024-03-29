@@ -152,7 +152,7 @@ if mergedpd.empty is False:
 
 
     top = mergedpd.sort_values(by='ZSUM', ascending=False)
-    if len(top.index) < 20:
+    if len(top.index) < 30:
         topprintout = printout(top, 5)
     else:
         topprintout = printout(top, 10)
