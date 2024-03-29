@@ -127,7 +127,7 @@ if mergedpd.empty is False:
     mergedpd['BLKZ'] = (((mergedpd['blk']-0.6413044)/0.5216844)*0.80)
     mergedpd['PTSZ'] = ((mergedpd['pts']-16.192476)/5.956778)
     mergedpd['FGARZ'] = (((mergedpd['FGAR']-(-0.03505124))/0.65614770)*0.90)
-    mergedpd['FTARZ'] = (((mergedpd['FTAR']-0.02214733)/0.28761030)*0.90)
+    mergedpd['FTARZ'] = (((mergedpd['FTAR']-0.02214733)/0.28761030)*0.80)
 
     col_list = list(mergedpd)
     zcols = col_list[55:64] #rebz through ftarz
