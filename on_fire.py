@@ -46,11 +46,7 @@ for i, jsons in enumerate(jsonlist):
     df = pd.json_normalize(jsons, record_path='data') #normalize all jsons into dfs
     dfs.append(df)
 
-if len(dfs) > 1:
-    mergedpd = pd.concat(dfs, ignore_index=True) 
-else:
-    mergedpd = dfs[0] #use for low volume games like in season tournament days
-    
+mergedpd = pd.concat(dfs, ignore_index=True) #this will also work on days where there is only one dataframe to take in; best to use this instead of "mergedpd = dfs[0]" given that we want to modify a "full" dataframe rather than a copy of it 
 
 gms = league.teams #fetch all team names
 
@@ -156,7 +152,7 @@ if mergedpd.empty is False:
 
 
     top = mergedpd.sort_values(by='ZSUM', ascending=False)
-    if len(top.index) < 20:
+    if len(top.index) < 30:
         topprintout = printout(top, 5)
     else:
         topprintout = printout(top, 10)
