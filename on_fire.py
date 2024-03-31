@@ -67,36 +67,40 @@ df2['Player'] = df2['Player'].str.replace(')', '')
 playerdict = df2.set_index('Player')['GM'].to_dict()
 
 #create emoji criteria for "mindblowing stats"
-def zcheck(bdldf, zcolumn, x):
+def zcheck(bdldf, zcolumn, x) -> str: 
+    """Checks if the counting Z-score is equal to or above 3.50. If it is, it returns the mindblown emoji."""
     if bdldf[zcolumn].iloc[x] >= 3.50:
         return ' 🤯'
     else:
         return ''
 
-def stlcheck(bdldf, stlcol, x):
-    if bdldf[stlcol].iloc[x] >= 8.46557978778486: #the cutoff for this is 4 STLs minimum
+def stlcheck(bdldf, stlcol, x) -> str:
+    """Checks if the steal z-score is equal to or above 8.46557978778486 (or, four steals). If it is, it returns the mindblown emoji."""
+    if bdldf[stlcol].iloc[x] >= 8.46557978778486:
         return ' 🤯'
     else:
         return ''
     
-def volcheck(bdldf, zcolumn, x):
-    if bdldf[zcolumn].iloc[x] > 3.25:
+def volcheck(bdldf, zcolumn, x) -> str:
+    """Checks if the player's efficiency (FGARZ or FTARZ) was at or above/below 3.25/-3.25. Will either return target emoji (great accuracy) or brick emoji (awful accuracy). """
+    if bdldf[zcolumn].iloc[x] >= 3.25:
         return ' 🎯'
-    elif bdldf[zcolumn].iloc[x] < -3.25:
+    elif bdldf[zcolumn].iloc[x] <= -3.25:
         return ' 🧱'
-    elif bdldf[zcolumn].iloc[x] == 0:
-        return ''  
     else:
         return ''
     
-def tocheck(bdldf, tozcolumn, x):
-    if bdldf[tozcolumn].iloc[x] <= -1.08150924234275: #the cutoff for this is 5 TOs minimum 
+def tocheck(bdldf, tozcolumn, x) -> str:
+    """Checks if the player's TOZ was at -1.08150924234275 or below (or, five turnovers or more). If so, return the vomit emoji. """
+    if bdldf[tozcolumn].iloc[x] <= -1.08150924234275: 
         return ' 🤮 '
     else:
         return ' '
     
 
-def printout(bdldf, maxlines):
+def printout(bdldf, maxlines) -> str:
+    """Forms the printout of the selected range of lines from the Ball Don't Lie dataframe. Also checks if a player's line included a triple double. 
+    Note: 'maxlines' will determine how many lines from the dataframe to print out. This can be modified depending on how many lines you want to print depending on any conditions (i.e. game volume, etc.)"""
     alllines = []
     for i in range (0, maxlines):
         if sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) >= 3: #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
