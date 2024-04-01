@@ -10,12 +10,13 @@ lines = [ #corny intros to start up each On Fire message; message is selected at
     'If you touch these lines you\'ll get burned!',
     'There\'s a heatwave in the league!',
     'A water hose can\'t put out this level of heat!',
-    'Another day of Omarball, another set of All-Star Lines!'
+    'Another day of Omarball, another set of All-Star lines!',
+    'These lines will make you shout \'Boomshakalaka!\''
 ]
 
 elseline = random.choice(lines) #choose a random non-holiday intro line 
 
-leadinline = f'Let\'s see who was on fire for {day}' #line created for non-holiday intro 
+leadinline = f'Let\'s see who was on 🔥 for {day}' #line created for non-holiday intro 
 
 leadoutline = 'Of course, not everyone can be a winner...here\'s who was on 🥶 tonight' #line created for non-holiday bad line section 
 
