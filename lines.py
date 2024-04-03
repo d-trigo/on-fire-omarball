@@ -22,7 +22,8 @@ leadoutline = 'Of course, not everyone can be a winner...here\'s who was on 🥶
 
 
 
-def intro(todaysdate): 
+def intro(todaysdate) -> str:
+    """Creates the beginning to the printout. On the defined holidays, On Fire will post a special Holiday intro. Otherwise, it will fallback to a regular intro."""
     if todaysdate == '10-31':
         return 'Happy Halloween! What\'s most frightening: ghosts, mummies, or 🔥 lines from your opponent? Let\'s answer this by taking a look at who was on 🔥 today.'
     elif todaysdate == '12-25':
@@ -38,7 +39,8 @@ def intro(todaysdate):
     
 
 
-def worstintro(todaysdate): #more to be added here
+def worstintro(todaysdate) -> str: #more to be added here
+    """Creates the first line of the worst line printout. Like 'intro(todaysdate)', this will post a special Holiday intro or otherwise fallback to a regular intro."""
     if todaysdate == '10-31':
         return 'Even more frightening? Seeing disappointing lines from your roster...here\'s the ones who acted like 🧟‍♂️s on the court:'
     elif todaysdate == '12-25':
