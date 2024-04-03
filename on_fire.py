@@ -103,11 +103,13 @@ def printout(bdldf, maxlines) -> str:
     Note: 'maxlines' will determine how many lines from the dataframe to print out. This can be modified depending on how many lines you want to print depending on any conditions (i.e. game volume, etc.)"""
     alllines = []
     for i in range (0, maxlines):
-        if sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) >= 3: #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
-            tripledubline = str(' 3️⃣🚀')
+        if sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) == 3: #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
+            statdubline = str(' 3️⃣🚀')
+        elif sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) == 4:
+            statdubline = str(' 4️⃣🎆') #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
         else:
-            tripledubline = None 
-        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{tripledubline if tripledubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]}{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]}{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]}{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]}{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]}{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]}{zcheck(bdldf, 'blk', i)}, and {bdldf['tov_s'].iloc[i]}{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
+            statdubline = None 
+        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{statdubline if statdubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]}{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]}{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]}{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]}{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]}{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]}{zcheck(bdldf, 'blk', i)}, and {bdldf['tov_s'].iloc[i]}{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
         alllines.append(line)
     printed = "\n".join([str(playerline) for playerline in alllines])
     print(printed) 
