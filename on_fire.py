@@ -99,7 +99,7 @@ def tocheck(bdldf, tozcolumn, x):
 def printout(bdldf, maxlines):
     alllines = []
     for i in range (0, maxlines):
-        if sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) >= 3: #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
+        if sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) == 3: #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
             statdubline = str(' 3️⃣🚀')
         elif sum([(bdldf['pts'].iloc[i]>=10), (bdldf['reb'].iloc[i]>=10), (bdldf['ast'].iloc[i]>=10), (bdldf['stl'].iloc[i]>=10), (bdldf['blk'].iloc[i]>=10)]) == 4:
             statdubline = str(' 4️⃣🎆') #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
