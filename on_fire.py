@@ -198,7 +198,7 @@ if mergedpd.empty is False:
 
     data_stream = io.BytesIO()
 
-    fig, ax = plt.subplots(figsize=(30,8))
+    fig, ax = plt.subplots(figsize=(15,15))
 
     ax.set(ylim=(-50, 50))
 
@@ -212,7 +212,8 @@ if mergedpd.empty is False:
     )
 
     for i in range(0, len(ax.containers)):
-        ax.bar_label(ax.containers[i], fontsize=10, padding=1.5)
+        ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5)
+    plt.xticks(rotation=-45)
 
     plt.savefig(data_stream, format='png', bbox_inches="tight", dpi = 80) #bbox inches insures that our graph margins aren't too big
     plt.close()
