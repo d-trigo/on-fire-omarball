@@ -37,7 +37,7 @@ next_cursor_page = None
 
 #create scraping loop
 while True:
-    params = {'start_date':'2024-04-04', 'end_date':'2024-04-04', 'per_page':'100'}
+    params = {'start_date':yeardate, 'end_date':yeardate, 'per_page':'100'}
     if next_cursor_page:
         params['cursor'] = next_cursor_page #we get the first page by default, so this won't be added on the first run. later runs get the cursor when applicable
 
