@@ -1,15 +1,30 @@
 from discord.ext import commands
 import config #create a config file with your relevant keys or in a VENV file and do NOT share them!!!!!!!
 import discord
+
 import requests
+
 import pandas as pd
+import numpy as np 
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+import seaborn.objects as s
+
+import io 
+
 from datetime import date 
+
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2024, espn_s2=config.espn_s2config, swid=config.swid)
-#importing line module
-import lines
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
+
+#importing line module
+
+import lines
 
 #get date
 today = date.today()
@@ -22,7 +37,7 @@ next_cursor_page = None
 
 #create scraping loop
 while True:
-    params = {'start_date':yeardate, 'end_date':yeardate, 'per_page':'100'}
+    params = {'start_date':'2024-04-04', 'end_date':'2024-04-04', 'per_page':'100'}
     if next_cursor_page:
         params['cursor'] = next_cursor_page #we get the first page by default, so this won't be added on the first run. later runs get the cursor when applicable
 
@@ -166,6 +181,42 @@ if mergedpd.empty is False:
     bottom['min'] = bottom['min'].astype('int64')
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
     bottomprintout = printout(bottom, 5)
+
+    mergedpd = mergedpd.rename(columns={
+    'min':'MIN'
+    })
+
+    gmsums = mergedpd.groupby('GM').agg({
+    'MIN':'sum',
+    'ZSUM':'sum'
+    }).reset_index()
+
+
+    #creating daily graph
+
+    data_stream = io.BytesIO()
+
+    fig, ax = plt.subplots(figsize=(30,8))
+
+    ax.set(ylim=(-50, 50))
+
+
+    barplot = sns.barplot(
+    gmsums,
+    x='GM',
+    y='ZSUM',
+    hue='GM',
+    order=gmsums.sort_values(by='ZSUM', ascending=False).GM
+    )
+
+    for i in range(0, len(ax.containers)):
+        ax.bar_label(ax.containers[i], fontsize=10, padding=1.5)
+
+    plt.savefig(data_stream, format='png', bbox_inches="tight", dpi = 80) #bbox inches insures that our graph margins aren't too big
+    plt.close()
+
+    data_stream.seek(0)
+    chart=discord.File(data_stream, filename='dailyzsum.png')
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
@@ -179,4 +230,6 @@ async def on_ready():
     else:
         await channel.send(f"{lines.intro(monthdate)}\n{topprintout}")
         await channel.send(f"{lines.worstintro(monthdate)}\n{bottomprintout}")
+        await channel.send("Let\'s end today\'s episode of On Fire with a visualization of how each team did as a whole relative to their active player\'s Z-scores:", file=chart)
+
 bot.run(config.discord_token)
