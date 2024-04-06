@@ -134,6 +134,8 @@ if mergedpd.empty is False:
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
     mergedpd = mergedpd.dropna(subset=["GM"])
+    mergedpd['min'] = mergedpd['min'].astype('int64')
+    mergedpd = mergedpd.query('min > 0')
 
 
     mergedpd['FGAR'] = (mergedpd['fgm']-(0.4834302*mergedpd['fga'])) 
@@ -216,6 +218,7 @@ if mergedpd.empty is False:
     plt.xticks(rotation=-45)
 
     #if you need to debug the image with the actual width/height before it gets sent out, download the simply-view-image-for-python-debugging extension and input "fig" to use it once the plot is done: https://marketplace.visualstudio.com/items?itemName=elazarcoh.simply-view-image-for-python-debugging
+    fig
     plt.savefig(data_stream, format='png', bbox_inches="tight", dpi = 80) #bbox inches insures that our graph margins aren't too big
     plt.close()
 
