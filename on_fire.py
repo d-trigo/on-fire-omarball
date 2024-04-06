@@ -198,7 +198,7 @@ if mergedpd.empty is False:
 
     data_stream = io.BytesIO()
 
-    fig, ax = plt.subplots(figsize=(15,15))
+    fig, ax = plt.subplots(figsize=(15,16))
 
     ax.set(ylim=(-50, 50))
 
@@ -215,6 +215,7 @@ if mergedpd.empty is False:
         ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5)
     plt.xticks(rotation=-45)
 
+    #if you need to debug the image with the actual width/height before it gets sent out, download the simply-view-image-for-python-debugging extension and input "fig" to use it once the plot is done: https://marketplace.visualstudio.com/items?itemName=elazarcoh.simply-view-image-for-python-debugging
     plt.savefig(data_stream, format='png', bbox_inches="tight", dpi = 80) #bbox inches insures that our graph margins aren't too big
     plt.close()
 
