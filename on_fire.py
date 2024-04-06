@@ -182,7 +182,6 @@ if mergedpd.empty is False:
 
     #finding worst lines 
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
-    bottom['min'] = bottom['min'].astype('int64')
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
     bottomprintout = printout(bottom, 5)
 
@@ -193,7 +192,8 @@ if mergedpd.empty is False:
     gmsums = mergedpd.groupby('GM').agg({
     'MIN':'sum',
     'ZSUM':'sum'
-    }).reset_index()
+    }).round(decimals=2
+    ).reset_index()
 
 
     #creating daily graph
@@ -203,7 +203,6 @@ if mergedpd.empty is False:
     fig, ax = plt.subplots(figsize=(15,16))
 
     ax.set(ylim=(-50, 50))
-
 
     barplot = sns.barplot(
     gmsums,
