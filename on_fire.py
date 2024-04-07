@@ -204,6 +204,7 @@ if mergedpd.empty is False:
     fig, ax = plt.subplots(figsize=(15,16))
 
     ax.set(ylim=(-50, 50))
+    ax.set_title(str(f"Daily Z-Sum for {yeardate}"), fontsize=16)
 
     barplot = sns.barplot(
     gmsums,
