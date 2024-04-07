@@ -208,9 +208,9 @@ if mergedpd.empty is False:
     data_stream = io.BytesIO()
 
     plt.style.use("dark_background")
-    fig, ax = plt.subplots(figsize=(10,16))
+    fig, ax = plt.subplots(figsize=(12,9))
 
-    ax.set(ylim=(-50, 50))
+    ax.set(ylim=(-30, 30))
     ax.set_title(str(f"Daily Z-Sum for {yeardate}"), fontsize=25)
 
     barplot = sns.barplot(
@@ -221,8 +221,12 @@ if mergedpd.empty is False:
     order=gmsums.sort_values(by='ZSUM', ascending=False).Abbrev
     )
 
-    for i in range(0, len(ax.containers)):
-        ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5)
+    for i, (containers, values) in enumerate(zip(ax.containers, gmsums['ZSUM'])):
+        if 2.5 >= values >= -2.5: #if value is below 2.5 and above -2.5...
+            ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5) #values go outside bar due to narrow length in this case
+        else:
+            ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5, label_type='center', color='k')
+        
 
     plt.xlabel('Team', labelpad=13, fontsize=20)
     plt.ylabel('Z-Sum', fontsize=20)
