@@ -200,6 +200,7 @@ if mergedpd.empty is False:
 
     data_stream = io.BytesIO()
 
+    plt.style.use("dark_background")
     fig, ax = plt.subplots(figsize=(15,16))
 
     ax.set(ylim=(-50, 50))
