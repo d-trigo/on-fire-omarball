@@ -2,7 +2,7 @@ library(hoopR)
 library(tidyverse)
 
 #scrape players
-nba24players <- nba_leaguedashplayerstats(league_id = '00', season = year_to_season(most_recent_nba_season() - 1)) 
+nba24players <- nba_leaguedashplayerstats(league_id = '00', season = '2023-24') 
 #you can replicate everything after for past seasons by changing the season arg and GP cut-off if desired
 #try to calculate the avg values for those seasons though before making z scores
 
