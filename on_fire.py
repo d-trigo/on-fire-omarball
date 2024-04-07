@@ -65,13 +65,18 @@ mergedpd = pd.concat(dfs, ignore_index=True) #this will also work on days where 
 
 gms = league.teams #fetch all team names
 
+abbrevs = []
+for i in range(len(gms)):
+    abbrev = league.teams[i].team_abbrev
+    abbrevs.append(abbrev)
+
 playerslist = []
 for i in range(len(gms)):
     players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
     playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
     
-df = pd.DataFrame((zip(gms, playerslist)), 
-    columns = ['GM', 'Player'])
+df = pd.DataFrame((zip(gms, playerslist, abbrevs)), 
+    columns = ['GM', 'Player', 'Abbrev'])
 
 df2 = df.explode('Player')
 df2 = df2.astype(str)
@@ -80,6 +85,7 @@ df2['GM'] = df2['GM'].str.replace(')', '')
 df2['Player'] = df2['Player'].str.replace('Player(', '')
 df2['Player'] = df2['Player'].str.replace(')', '')
 playerdict = df2.set_index('Player')['GM'].to_dict()
+abbrevdict = df2.set_index('GM')['Abbrev'].to_dict()
 
 #create emoji criteria for "mindblowing stats"
 def zcheck(bdldf, zcolumn, x) -> str: 
@@ -133,6 +139,7 @@ def printout(bdldf, maxlines) -> str:
 if mergedpd.empty is False:
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
+    mergedpd['Abbrev'] = mergedpd['GM'].map(abbrevdict)
     mergedpd = mergedpd.dropna(subset=["GM"])
     mergedpd['min'] = mergedpd['min'].astype('int64')
     mergedpd = mergedpd.query('min > 0')
@@ -189,7 +196,7 @@ if mergedpd.empty is False:
     'min':'MIN'
     })
 
-    gmsums = mergedpd.groupby('GM').agg({
+    gmsums = mergedpd.groupby('Abbrev').agg({
     'MIN':'sum',
     'ZSUM':'sum'
     }).round(decimals=2
@@ -201,22 +208,26 @@ if mergedpd.empty is False:
     data_stream = io.BytesIO()
 
     plt.style.use("dark_background")
-    fig, ax = plt.subplots(figsize=(15,16))
+    fig, ax = plt.subplots(figsize=(10,16))
 
     ax.set(ylim=(-50, 50))
-    ax.set_title(str(f"Daily Z-Sum for {yeardate}"), fontsize=16)
+    ax.set_title(str(f"Daily Z-Sum for {yeardate}"), fontsize=25)
 
     barplot = sns.barplot(
     gmsums,
-    x='GM',
+    x='Abbrev',
     y='ZSUM',
-    hue='GM',
-    order=gmsums.sort_values(by='ZSUM', ascending=False).GM
+    hue='Abbrev',
+    order=gmsums.sort_values(by='ZSUM', ascending=False).Abbrev
     )
 
     for i in range(0, len(ax.containers)):
         ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5)
-    plt.xticks(rotation=-45)
+
+    plt.xlabel('Team', labelpad=13, fontsize=20)
+    plt.ylabel('Z-Sum', fontsize=20)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
 
     #if you need to debug the image with the actual width/height before it gets sent out, download the simply-view-image-for-python-debugging extension and input "fig" to use it once the plot is done: https://marketplace.visualstudio.com/items?itemName=elazarcoh.simply-view-image-for-python-debugging
     fig
