@@ -133,7 +133,9 @@ if mergedpd.empty is False:
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
     mergedpd['Status'] = mergedpd['PlayerName'].map(statusdict)
     mergedpd = mergedpd.dropna(subset=["GM"])
-    mergedpd = mergedpd.query("Status != 'BE'")
+    mergedpd = mergedpd.query("Status != 'BE'")  
+    mergedpd = mergedpd.query("Status != 'IR'")
+
 
 
     mergedpd['FGAR'] = (mergedpd['fgm']-(0.4834302*mergedpd['fga'])) 
