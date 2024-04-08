@@ -154,7 +154,9 @@ def printout(bdldf, maxlines) -> str:
     print(printed) 
     return printed
         
-if bdlmerged.empty is False:
+if bdlmerged.empty is True:
+    print('No games found.')
+else:
     bdlmerged['PlayerName'] = bdlmerged['player.first_name'] + " " + bdlmerged['player.last_name']
     #mapping espn info
     bdlmerged['GM'] = bdlmerged['PlayerName'].map(playerdict)
