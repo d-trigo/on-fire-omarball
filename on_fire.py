@@ -54,17 +54,30 @@ playerslist = []
 for i in range(len(gms)):
     players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
     playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
+
+def getstatus(playerlist):
+    for i, lists in enumerate(playerlist):
+        for z, players in enumerate(lists):
+            status = league.teams[i].roster[z].lineupSlot
+            players = str(players)
+            players = players + ', ' + status
+            lists[z] = players
+
+getstatus(playerslist)
     
 df = pd.DataFrame((zip(gms, playerslist)), 
     columns = ['GM', 'Player'])
 
 df2 = df.explode('Player')
 df2 = df2.astype(str)
+df2[['Player', 'Status']] = df2['Player'].str.split(', ', n=1, expand=True)
 df2['GM'] = df2['GM'].str.replace('Team(', '')
 df2['GM'] = df2['GM'].str.replace(')', '')
 df2['Player'] = df2['Player'].str.replace('Player(', '')
 df2['Player'] = df2['Player'].str.replace(')', '')
 playerdict = df2.set_index('Player')['GM'].to_dict()
+statusdict = df2.set_index('Player')['Status'].to_dict()
+
 
 #create emoji criteria for "mindblowing stats"
 def zcheck(bdldf, zcolumn, x) -> str: 
@@ -118,7 +131,11 @@ def printout(bdldf, maxlines) -> str:
 if mergedpd.empty is False:
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
+    mergedpd['Status'] = mergedpd['PlayerName'].map(statusdict)
     mergedpd = mergedpd.dropna(subset=["GM"])
+    mergedpd = mergedpd.query("Status != 'BE'")  
+    mergedpd = mergedpd.query("Status != 'IR'")
+
 
 
     mergedpd['FGAR'] = (mergedpd['fgm']-(0.4834302*mergedpd['fga'])) 
