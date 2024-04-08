@@ -1,15 +1,30 @@
 from discord.ext import commands
 import config #create a config file with your relevant keys or in a VENV file and do NOT share them!!!!!!!
 import discord
+
 import requests
+
 import pandas as pd
+import numpy as np 
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+import seaborn.objects as s
+
+import io 
+
 from datetime import date 
+
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2024, espn_s2=config.espn_s2config, swid=config.swid)
-#importing line module
-import lines
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
+
+#importing line module
+
+import lines
 
 #get date
 today = date.today()
@@ -50,11 +65,15 @@ mergedpd = pd.concat(dfs, ignore_index=True) #this will also work on days where 
 
 gms = league.teams #fetch all team names
 
+abbrevs = []
+for i in range(len(gms)):
+    abbrev = league.teams[i].team_abbrev
+    abbrevs.append(abbrev)
+
 playerslist = []
 for i in range(len(gms)):
     players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
     playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
-
 def getstatus(playerlist):
     for i, lists in enumerate(playerlist):
         for z, players in enumerate(lists):
@@ -64,9 +83,10 @@ def getstatus(playerlist):
             lists[z] = players
 
 getstatus(playerslist)
+
     
-df = pd.DataFrame((zip(gms, playerslist)), 
-    columns = ['GM', 'Player'])
+df = pd.DataFrame((zip(gms, playerslist, abbrevs)), 
+    columns = ['GM', 'Player', 'Abbrev'])
 
 df2 = df.explode('Player')
 df2 = df2.astype(str)
@@ -77,7 +97,7 @@ df2['Player'] = df2['Player'].str.replace('Player(', '')
 df2['Player'] = df2['Player'].str.replace(')', '')
 playerdict = df2.set_index('Player')['GM'].to_dict()
 statusdict = df2.set_index('Player')['Status'].to_dict()
-
+abbrevdict = df2.set_index('GM')['Abbrev'].to_dict()
 
 #create emoji criteria for "mindblowing stats"
 def zcheck(bdldf, zcolumn, x) -> str: 
@@ -132,7 +152,10 @@ if mergedpd.empty is False:
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
     mergedpd['Status'] = mergedpd['PlayerName'].map(statusdict)
+    mergedpd['Abbrev'] = mergedpd['GM'].map(abbrevdict)
     mergedpd = mergedpd.dropna(subset=["GM"])
+    mergedpd['min'] = mergedpd['min'].astype('int64')
+    mergedpd = mergedpd.query('min > 0')
     mergedpd = mergedpd.query("Status != 'BE'")  
     mergedpd = mergedpd.query("Status != 'IR'")
 
@@ -182,9 +205,57 @@ if mergedpd.empty is False:
 
     #finding worst lines 
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
-    bottom['min'] = bottom['min'].astype('int64')
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
     bottomprintout = printout(bottom, 5)
+
+    mergedpd = mergedpd.rename(columns={
+    'min':'MIN'
+    })
+
+    gmsums = mergedpd.groupby('Abbrev').agg({
+    'MIN':'sum',
+    'ZSUM':'sum'
+    }).round(decimals=2
+    ).reset_index()
+
+
+    #creating daily graph
+
+    data_stream = io.BytesIO()
+
+    plt.style.use("dark_background")
+    fig, ax = plt.subplots(figsize=(12,9))
+
+    ax.set(ylim=(-30, 30))
+    ax.set_title(str(f"Daily Z-Sum for {yeardate}"), fontsize=25)
+
+    barplot = sns.barplot(
+    gmsums,
+    x='Abbrev',
+    y='ZSUM',
+    hue='Abbrev',
+    order=gmsums.sort_values(by='ZSUM', ascending=False).Abbrev
+    )
+
+    for i, (containers, values) in enumerate(zip(ax.containers, gmsums['ZSUM'])):
+        if 2.5 >= values >= -2.5: #if value is below 2.5 and above -2.5...
+            ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5) #values go outside bar due to narrow length in this case
+        else:
+            ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5, label_type='center', color='k')
+        
+
+    plt.xlabel('Team', labelpad=13, fontsize=20)
+    plt.ylabel('Z-Sum', fontsize=20)
+    plt.xticks(fontsize=16)
+    plt.yticks(fontsize=16)
+
+    #if you need to debug the image with the actual width/height before it gets sent out, download the simply-view-image-for-python-debugging extension and input "fig" to use it once the plot is done: https://marketplace.visualstudio.com/items?itemName=elazarcoh.simply-view-image-for-python-debugging
+    fig
+    plt.savefig(data_stream, format='png', bbox_inches="tight", dpi = 80) #bbox inches insures that our graph margins aren't too big
+    plt.close()
+
+    data_stream.seek(0)
+    chart=discord.File(data_stream, filename='dailyzsum.png')
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
@@ -198,4 +269,6 @@ async def on_ready():
     else:
         await channel.send(f"{lines.intro(monthdate)}\n{topprintout}")
         await channel.send(f"{lines.worstintro(monthdate)}\n{bottomprintout}")
+        await channel.send("Let\'s end today\'s episode of On Fire with a visualization of how each team did as a whole relative to their active player\'s Z-scores:", file=chart)
+
 bot.run(config.discord_token)
