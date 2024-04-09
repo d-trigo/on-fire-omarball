@@ -10,7 +10,7 @@
 - [What do the emoji mean?](#what-do-the-emoji-mean)
 - [Can players only get great emoji if they show up in the best lines list (and vice versa?)](#can-players-only-get-great-emoji-if-they-show-up-in-the-best-lines-list-and-vice-versa)
 - [Why did I use ESPN API info?](#why-did-i-use-espn-api-info)
-- [Why filter out players who played less than 24 min. for the worst lines printout?](#why-filter-out-players-who-played-less-than-24-min-for-the-worst-lines-printout)
+- [Why filter out players who played less than 14 min. for the worst lines printout?](#why-filter-out-players-who-played-less-than-14-min-for-the-worst-lines-printout)
 - [Why not use the same filter on the best lines section for consistency?](#why-not-use-the-same-filter-on-the-best-lines-section-for-consistency)
 - [I see constants added on top of most of the z-score category calculations, why is that?](#i-see-constants-added-on-top-of-most-of-the-z-score-category-calculations-why-is-that)
 - [Will the mean and SDs used for the z-score calculations change in future NBA seasons?](#will-the-mean-and-sds-used-for-the-z-score-calculations-change-in-future-nba-seasons)
@@ -44,7 +44,7 @@ This bot is given a unique channel in the Omarball server to post in. Every nigh
 
 The scraping aspect utilizes the ESPN API package to fetch rosters for each Omarball GM along with the name of the GM's team. Once player lines are obtained via Ball Don't Lie, the script maps GMs who own the respective players into the dataframe. After scraping is completed, z scores are calculated for each player line using mean and SD s obtained for the NBA categories on a season-wide basis. With the z-scores, two printouts are created: one is for the best lines with the BDL DF sorted by descending order in regard to the 'ZSUM' (or, sum of a player's z scores across all categories) and another is for the worst lines with the same DF sorted by ascending order. Once these printouts are created, the script moves into the Discord bot phase where it will make two separate posts, one for the best lines and another for the worst lines.
 
-*Note: How many lines the bot will post depends on the amount of lines available and, in turn, how many games were played for the day. If there are less than 20 lines available once unrostered players are dropped (and, for the worst lines, all players who played less than 24 min. are also dropped), the script will shorten the posts to provide only the best and worst 5 five lines. Otherwise, it will post the best and worst 10 lines.*
+*Note: How many lines the bot will post depends on the amount of lines available and, in turn, how many games were played for the day. If there are less than 30 lines available once unrostered players are dropped (and, for the worst lines, all players who played less than 24 min. are also dropped), the script will shorten the posts to provide only the best and worst 5 five lines. Otherwise, it will post the best and worst 10 lines.*
 
 <!-- TOC --><a name="what-do-the-emoji-mean"></a>
 # What do the emoji and bold text mean?
