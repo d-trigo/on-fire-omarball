@@ -6,7 +6,6 @@ import requests
 import pandas as pd
 
 import matplotlib.pyplot as plt
-
 import seaborn as sns
 
 import io 
@@ -14,20 +13,19 @@ import io
 from datetime import date 
 
 #importing line module for custom intros and outros
-
 import lines
 
 #importing keys, create a config file with your relevant keys or in a VENV file and do NOT share them!!!!!!!
 import config
-
 
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2024, espn_s2=config.espn_s2config, swid=config.swid)
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
-#importing line module
-import lines
+
+
+
 
 #grabbing Ball Don't Lie info 
 #get date
@@ -96,11 +94,14 @@ espndf = pd.DataFrame((zip(gms, playerslist, abbrevs)),
 
 espndf = espndf.explode('Player')
 espndf = espndf.astype(str)
+
 espndf[['Player', 'Status']] = espndf['Player'].str.split(', ', n=1, expand=True)
 espndf['GM'] = espndf['GM'].str.replace('Team(', '')
 espndf['GM'] = espndf['GM'].str.replace(')', '')
+
 espndf['Player'] = espndf['Player'].str.replace('Player(', '')
 espndf['Player'] = espndf['Player'].str.replace(')', '')
+
 playerdict = espndf.set_index('Player')['GM'].to_dict()
 statusdict = espndf.set_index('Player')['Status'].to_dict()
 abbrevdict = espndf.set_index('GM')['Abbrev'].to_dict()
@@ -162,7 +163,7 @@ else:
     bdlmerged['GM'] = bdlmerged['PlayerName'].map(playerdict)
     bdlmerged['Status'] = bdlmerged['PlayerName'].map(statusdict)
     bdlmerged['Abbrev'] = bdlmerged['GM'].map(abbrevdict)
-
+    #queries
     bdlmerged = bdlmerged.dropna(subset=["GM"])
     bdlmerged['min'] = bdlmerged['min'].astype('int64')
     bdlmerged = bdlmerged.query('min > 0')
@@ -219,6 +220,8 @@ else:
     bottom = bdlmerged.sort_values(by='ZSUM', ascending=True)
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
     bottomprintout = printout(bottom, 5)
+    #debug note: when you're running this query set to 14 or more minutes, it won't work well if it's the beginning of the game. 
+
 
     #create daily zsum graph
 
@@ -271,7 +274,6 @@ else:
     data_stream.seek(0)
     chart=discord.File(data_stream, filename='dailyzsum.png')
         
-#debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
