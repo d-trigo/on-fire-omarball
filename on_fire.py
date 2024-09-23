@@ -1,35 +1,37 @@
 from discord.ext import commands
-import config #create a config file with your relevant keys or in a VENV file and do NOT share them!!!!!!!
 import discord
 
 import requests
 
 import pandas as pd
-import numpy as np 
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-
 import seaborn as sns
-import seaborn.objects as s
 
 import io 
 
 from datetime import date 
+
+#importing line module for custom intros and outros
+import lines
+
+#importing keys, create a config file with your relevant keys or in a VENV file and do NOT share them!!!!!!!
+import config
 
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2025, espn_s2=config.espn_s2config, swid=config.swid)
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
-#importing line module
 
-import lines
 
+
+
+#grabbing Ball Don't Lie info 
 #get date
 today = date.today()
-yeardate = today.strftime("%Y-%m-%d")
-monthdate = today.strftime("%m-%d")
+yeardate = today.strftime("%Y-%m-%d") #for BDL request and graph
+monthdate = today.strftime("%m-%d") #for the lines module
 
 #create list for all ball don't lie (BDL) json scrape lists to go into
 jsonlist = []
@@ -53,28 +55,30 @@ while True:
 
     next_cursor_page = rjson['meta'].get('next_cursor', None) #if next cursor number exists, get next cursor
     if not next_cursor_page:
-        print('There are no more pages available. All games for specified day logged. Check the "mergedpd" dataframe for all lines.')
+        print('There are no more pages available. All games for specified day logged. Check the "bdlmerged" dataframe for all lines.')
         break
 
-dfs = []
-for i, jsons in enumerate(jsonlist):
-    df = pd.json_normalize(jsons, record_path='data') #normalize all jsons into dfs
-    dfs.append(df)
+bdldfs = [] 
+for jsons in jsonlist:
+    bdldf = pd.json_normalize(jsons, record_path='data') #normalize all jsons into dfs
+    bdldfs.append(bdldf)
 
-mergedpd = pd.concat(dfs, ignore_index=True) #this will also work on days where there is only one dataframe to take in; best to use this instead of "mergedpd = dfs[0]" given that we want to modify a "full" dataframe rather than a copy of it 
+bdlmerged = pd.concat(bdldfs, ignore_index=True) #this will also work on days where there is only one dataframe to take in; best to use this instead of "bdlmerged = dfs[0]" given that we want to modify a "full" dataframe rather than a copy of it 
 
+#grabbing ESPN league info 
 gms = league.teams #fetch all team names
 
-abbrevs = []
+abbrevs = [] #for graph 
 for i in range(len(gms)):
     abbrev = league.teams[i].team_abbrev
     abbrevs.append(abbrev)
 
-playerslist = []
+playerslist = [] #fetch all rostered players 
 for i in range(len(gms)):
     players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
     playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
-def getstatus(playerlist):
+
+def getstatus(playerlist): #see if player is benched, in IR, etc. 
     for i, lists in enumerate(playerlist):
         for z, players in enumerate(lists):
             status = league.teams[i].roster[z].lineupSlot
@@ -85,19 +89,22 @@ def getstatus(playerlist):
 getstatus(playerslist)
 
     
-df = pd.DataFrame((zip(gms, playerslist, abbrevs)), 
+espndf = pd.DataFrame((zip(gms, playerslist, abbrevs)), 
     columns = ['GM', 'Player', 'Abbrev'])
 
-df2 = df.explode('Player')
-df2 = df2.astype(str)
-df2[['Player', 'Status']] = df2['Player'].str.split(', ', n=1, expand=True)
-df2['GM'] = df2['GM'].str.replace('Team(', '')
-df2['GM'] = df2['GM'].str.replace(')', '')
-df2['Player'] = df2['Player'].str.replace('Player(', '')
-df2['Player'] = df2['Player'].str.replace(')', '')
-playerdict = df2.set_index('Player')['GM'].to_dict()
-statusdict = df2.set_index('Player')['Status'].to_dict()
-abbrevdict = df2.set_index('GM')['Abbrev'].to_dict()
+espndf = espndf.explode('Player')
+espndf = espndf.astype(str)
+
+espndf[['Player', 'Status']] = espndf['Player'].str.split(', ', n=1, expand=True)
+espndf['GM'] = espndf['GM'].str.replace('Team(', '')
+espndf['GM'] = espndf['GM'].str.replace(')', '')
+
+espndf['Player'] = espndf['Player'].str.replace('Player(', '')
+espndf['Player'] = espndf['Player'].str.replace(')', '')
+
+playerdict = espndf.set_index('Player')['GM'].to_dict()
+statusdict = espndf.set_index('Player')['Status'].to_dict()
+abbrevdict = espndf.set_index('GM')['Abbrev'].to_dict()
 
 #create emoji criteria for "mindblowing stats"
 def zcheck(bdldf, zcolumn, x) -> str: 
@@ -148,78 +155,88 @@ def printout(bdldf, maxlines) -> str:
     print(printed) 
     return printed
         
-if mergedpd.empty is False:
-    mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
-    mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
-    mergedpd['Status'] = mergedpd['PlayerName'].map(statusdict)
-    mergedpd['Abbrev'] = mergedpd['GM'].map(abbrevdict)
-    mergedpd = mergedpd.dropna(subset=["GM"])
-    mergedpd['min'] = mergedpd['min'].astype('int64')
-    mergedpd = mergedpd.query('min > 0')
-    mergedpd = mergedpd.query("Status != 'BE'")  
-    mergedpd = mergedpd.query("Status != 'IR'")
+if bdlmerged.empty is True:
+    print('No games found.')
+else:
+    bdlmerged['PlayerName'] = bdlmerged['player.first_name'] + " " + bdlmerged['player.last_name']
+    #mapping espn info
+    bdlmerged['GM'] = bdlmerged['PlayerName'].map(playerdict)
+    bdlmerged['Status'] = bdlmerged['PlayerName'].map(statusdict)
+    bdlmerged['Abbrev'] = bdlmerged['GM'].map(abbrevdict)
+    #queries
+    bdlmerged = bdlmerged.dropna(subset=["GM"])
+    bdlmerged['min'] = bdlmerged['min'].astype('int64')
+    bdlmerged = bdlmerged.query('min > 0')
+    bdlmerged = bdlmerged.query("Status != 'BE'")  
+    bdlmerged = bdlmerged.query("Status != 'IR'")
 
 
+    #volume calcs
+    bdlmerged['FGAR'] = (bdlmerged['fgm']-(0.4834302*bdlmerged['fga'])) 
+    bdlmerged['FTAR'] = (bdlmerged['ftm']-(0.7940223*bdlmerged['fta']))
 
-    mergedpd['FGAR'] = (mergedpd['fgm']-(0.4834302*mergedpd['fga'])) 
-    mergedpd['FTAR'] = (mergedpd['ftm']-(0.7940223*mergedpd['fta']))
+    #z calcs
+    bdlmerged['REBZ'] = ((bdlmerged['reb']-5.451973)/2.525530)
+    bdlmerged['FG3Z'] = (((bdlmerged['fg3m']-1.7496388)/0.9290426)*0.80)
+    bdlmerged['ASTZ'] = ((bdlmerged['ast']-3.700322)/2.067065)
+    bdlmerged['TOVZ'] = (((bdlmerged['turnover']-1.758401)/0.749323)*-0.25)
+    bdlmerged['STLZ'] = (((bdlmerged['stl']-0.9037216)/0.2925993)*0.80)
+    bdlmerged['BLKZ'] = (((bdlmerged['blk']-0.6413044)/0.5216844)*0.80)
+    bdlmerged['PTSZ'] = ((bdlmerged['pts']-16.192476)/5.956778)
+    bdlmerged['FGARZ'] = (((bdlmerged['FGAR']-(-0.03505124))/0.65614770)*0.90)
+    bdlmerged['FTARZ'] = (((bdlmerged['FTAR']-0.02214733)/0.28761030)*0.80)
 
-
-    mergedpd['REBZ'] = ((mergedpd['reb']-5.451973)/2.525530)
-    mergedpd['FG3Z'] = (((mergedpd['fg3m']-1.7496388)/0.9290426)*0.80)
-    mergedpd['ASTZ'] = ((mergedpd['ast']-3.700322)/2.067065)
-    mergedpd['TOVZ'] = (((mergedpd['turnover']-1.758401)/0.749323)*-0.25)
-    mergedpd['STLZ'] = (((mergedpd['stl']-0.9037216)/0.2925993)*0.80)
-    mergedpd['BLKZ'] = (((mergedpd['blk']-0.6413044)/0.5216844)*0.80)
-    mergedpd['PTSZ'] = ((mergedpd['pts']-16.192476)/5.956778)
-    mergedpd['FGARZ'] = (((mergedpd['FGAR']-(-0.03505124))/0.65614770)*0.90)
-    mergedpd['FTARZ'] = (((mergedpd['FTAR']-0.02214733)/0.28761030)*0.80)
-
-    col_list = list(mergedpd)
+    #sum across all z columns to get final z sum for player 
+    col_list = list(bdlmerged)
     zcols = col_list[55:64] #rebz through ftarz
-    mergedpd['ZSUM'] = mergedpd[zcols].sum(axis=1)
+    bdlmerged['ZSUM'] = bdlmerged[zcols].sum(axis=1)
 
     #convert score cols to strings; this will be passed into the string while allowing us to keep int versions for checking for a triple dub 
-    mergedpd['pts_s'] = mergedpd['pts'].astype(str) + ' PTS'
-    mergedpd['blk_s'] = mergedpd['blk'].astype(str) + ' BLK'
-    mergedpd['reb_s'] = mergedpd['reb'].astype(str) + ' REB'
-    mergedpd['ast_s'] = mergedpd['ast'].astype(str) + ' AST'
-    mergedpd['stl_s'] = mergedpd['stl'].astype(str) + ' STL'
-    mergedpd['pts_s'] = mergedpd['pts'].astype(str) + ' PTS'
-    mergedpd['fg3m_s'] = mergedpd['fg3m'].astype(str) + ' 3PM'
-    mergedpd['tov_s'] = mergedpd['turnover'].astype(str) + ' TO'
+    #manly needed so we can use bolded text (via **) for good stats
+    bdlmerged['pts_s'] = bdlmerged['pts'].astype(str) + ' PTS'
+    bdlmerged['blk_s'] = bdlmerged['blk'].astype(str) + ' BLK'
+    bdlmerged['reb_s'] = bdlmerged['reb'].astype(str) + ' REB'
+    bdlmerged['ast_s'] = bdlmerged['ast'].astype(str) + ' AST'
+    bdlmerged['stl_s'] = bdlmerged['stl'].astype(str) + ' STL'
+    bdlmerged['pts_s'] = bdlmerged['pts'].astype(str) + ' PTS'
+    bdlmerged['fg3m_s'] = bdlmerged['fg3m'].astype(str) + ' 3PM'
+    bdlmerged['tov_s'] = bdlmerged['turnover'].astype(str) + ' TO'
 
-    mergedpd.loc[mergedpd['REBZ'] > 2.5, 'reb_s'] = '**' + mergedpd['reb_s'] + '**'
-    mergedpd.loc[mergedpd['FG3Z'] > 2.5, 'fg3m_s'] = '**' + mergedpd['fg3m_s'] + '**'
-    mergedpd.loc[mergedpd['ASTZ'] > 2.5, 'ast_s'] = '**' + mergedpd['ast_s'] + '**'
-    mergedpd.loc[mergedpd['BLKZ'] > 2.5, 'blk_s'] = '**' + mergedpd['blk_s'] + '**'
-    mergedpd.loc[mergedpd['PTSZ'] > 2.5, 'pts_s'] = '**' + mergedpd['pts_s'] + '**'
-    mergedpd.loc[mergedpd['STLZ'] > 2.5, 'stl_s'] = '**' + mergedpd['stl_s'] + '**'
+    bdlmerged.loc[bdlmerged['REBZ'] > 2.5, 'reb_s'] = '**' + bdlmerged['reb_s'] + '**'
+    bdlmerged.loc[bdlmerged['FG3Z'] > 2.5, 'fg3m_s'] = '**' + bdlmerged['fg3m_s'] + '**'
+    bdlmerged.loc[bdlmerged['ASTZ'] > 2.5, 'ast_s'] = '**' + bdlmerged['ast_s'] + '**'
+    bdlmerged.loc[bdlmerged['BLKZ'] > 2.5, 'blk_s'] = '**' + bdlmerged['blk_s'] + '**'
+    bdlmerged.loc[bdlmerged['PTSZ'] > 2.5, 'pts_s'] = '**' + bdlmerged['pts_s'] + '**'
+    bdlmerged.loc[bdlmerged['STLZ'] > 2.5, 'stl_s'] = '**' + bdlmerged['stl_s'] + '**'
 
-
-    top = mergedpd.sort_values(by='ZSUM', ascending=False)
+    #finding best lines 
+    top = bdlmerged.sort_values(by='ZSUM', ascending=False)
     if len(top.index) < 30:
         topprintout = printout(top, 5)
     else:
         topprintout = printout(top, 10)
 
     #finding worst lines 
-    bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
+    bottom = bdlmerged.sort_values(by='ZSUM', ascending=True)
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
     bottomprintout = printout(bottom, 5)
+    #debug note: when you're running this query set to 14 or more minutes, it won't work well if it's the beginning of the game. 
 
-    mergedpd = mergedpd.rename(columns={
+
+    #create daily zsum graph
+
+    bdlmerged = bdlmerged.rename(columns={
     'min':'MIN'
     })
 
-    gmsums = mergedpd.groupby('Abbrev').agg({
+    gmsums = bdlmerged.groupby('Abbrev').agg({
     'MIN':'sum',
     'ZSUM':'sum'
     }).round(decimals=2
     ).reset_index()
 
 
-    #creating daily graph
+    #graph setup with seaborn and mpl 
 
     data_stream = io.BytesIO()
 
@@ -257,14 +274,13 @@ if mergedpd.empty is False:
     data_stream.seek(0)
     chart=discord.File(data_stream, filename='dailyzsum.png')
         
-#debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
     channel = bot.get_channel(config.channel_id)
-    if mergedpd.empty is True:
+    if bdlmerged.empty is True:
         await channel.send("If you're seeing this message, On Fire did not retrieve any lines for today. This could be because there were no games or something wrong happened while scraping. If it's the latter, please contact On Fire's owner!")
     else:
         await channel.send(f"{lines.intro(monthdate)}\n{topprintout}")
