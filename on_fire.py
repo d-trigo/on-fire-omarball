@@ -19,7 +19,7 @@ from datetime import date
 
 #importing league
 from espn_api.basketball import League
-league = League(league_id=config.leagueid, year=2024, espn_s2=config.espn_s2config, swid=config.swid)
+league = League(league_id=config.leagueid, year=2025, espn_s2=config.espn_s2config, swid=config.swid)
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
 #importing line module
