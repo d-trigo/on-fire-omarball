@@ -202,7 +202,7 @@ if mergedpd.empty is False:
 
     print('Best lines:')
     top = mergedpd.sort_values(by='ZSUM', ascending=False)
-    if 11 < len(top.index) < 30:
+    if 11 <= len(top.index) <= 30:
         topprintout = printout(top, 5)
     elif len(top.index) <= 10:
         topprintout = printout(top, 3)
