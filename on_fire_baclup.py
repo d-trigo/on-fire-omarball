@@ -17,11 +17,6 @@ import io
 
 from datetime import date 
 
-#importing league
-from espn_api.basketball import League
-league = League(league_id=config.leagueid, year=2025, espn_s2=config.espn_s2config, swid=config.swid)
-print('ESPN league imported.')
-#note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
 #importing line module
 
@@ -65,41 +60,6 @@ for i, jsons in enumerate(jsonlist):
 
 mergedpd = pd.concat(dfs, ignore_index=True) #this will also work on days where there is only one dataframe to take in; best to use this instead of "mergedpd = dfs[0]" given that we want to modify a "full" dataframe rather than a copy of it 
 
-gms = league.teams #fetch all team names
-
-abbrevs = []
-for i in range(len(gms)):
-    abbrev = league.teams[i].team_abbrev
-    abbrevs.append(abbrev)
-
-playerslist = []
-for i in range(len(gms)):
-    players = league.teams[i].roster #get roster via index obtained with len(); each gm number corresponds to their respective roster 
-    playerslist.append(players) #each entry is a list of rosters; this will be separated when we use explode() with Pandas  
-def getstatus(playerlist):
-    for i, lists in enumerate(playerlist):
-        for z, players in enumerate(lists):
-            status = league.teams[i].roster[z].lineupSlot
-            players = str(players)
-            players = players + ', ' + status
-            lists[z] = players
-
-getstatus(playerslist)
-
-    
-df = pd.DataFrame((zip(gms, playerslist, abbrevs)), 
-    columns = ['GM', 'Player', 'Abbrev'])
-
-df2 = df.explode('Player')
-df2 = df2.astype(str)
-df2[['Player', 'Status']] = df2['Player'].str.split(', ', n=1, expand=True)
-df2['GM'] = df2['GM'].str.replace('Team(', '')
-df2['GM'] = df2['GM'].str.replace(')', '')
-df2['Player'] = df2['Player'].str.replace('Player(', '')
-df2['Player'] = df2['Player'].str.replace(')', '')
-playerdict = df2.set_index('Player')['GM'].to_dict()
-statusdict = df2.set_index('Player')['Status'].to_dict()
-abbrevdict = df2.set_index('GM')['Abbrev'].to_dict()
 
 #create emoji criteria for "mindblowing stats"
 def zcheck(bdldf, zcolumn, x) -> str: 
@@ -144,7 +104,7 @@ def printout(bdldf, maxlines) -> str:
             statdubline = str(' 4️⃣🎆') #make sure to add paranthesis to each Pandas index or else Python will incorrectly assume you're closing off the command
         else:
             statdubline = None 
-        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{statdubline if statdubline is not None else ''} (*{bdldf['GM'].iloc[i]}*) with {bdldf['pts_s'].iloc[i]}{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]}{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]}{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]}{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]}{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]}{zcheck(bdldf, 'blk', i)}, and {bdldf['tov_s'].iloc[i]}{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
+        line = str(f"{i+1}. **{bdldf['PlayerName'].iloc[i]}**{statdubline if statdubline is not None else ''} with {bdldf['pts_s'].iloc[i]}{zcheck(bdldf, 'PTSZ', i)}, {bdldf['reb_s'].iloc[i]}{zcheck(bdldf, 'REBZ', i)}, {bdldf['ast_s'].iloc[i]}{zcheck(bdldf, 'ASTZ', i)}, {bdldf['fg3m_s'].iloc[i]}{zcheck(bdldf, 'FG3Z', i)}, {bdldf['stl_s'].iloc[i]}{stlcheck(bdldf, 'STLZ', i)}, {bdldf['blk_s'].iloc[i]}{zcheck(bdldf, 'blk', i)}, and {bdldf['tov_s'].iloc[i]}{(tocheck(bdldf, 'TOVZ', i))}on {bdldf['fgm'].iloc[i]}/{bdldf['fga'].iloc[i]} FG{volcheck(bdldf, 'FGARZ', i)} and {bdldf['ftm'].iloc[i]}/{bdldf['fta'].iloc[i]} FT{volcheck(bdldf, 'FTARZ', i)} splits in {bdldf['min'].iloc[i]} min.")
         alllines.append(line)
     printed = "\n".join([str(playerline) for playerline in alllines])
     print(printed) 
@@ -153,14 +113,8 @@ def printout(bdldf, maxlines) -> str:
 if mergedpd.empty is False:
     print('Beginning ESPN and BDL dataframe merge.')
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
-    mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
-    mergedpd['Status'] = mergedpd['PlayerName'].map(statusdict)
-    mergedpd['Abbrev'] = mergedpd['GM'].map(abbrevdict)
-    mergedpd = mergedpd.dropna(subset=["GM"])
     mergedpd['min'] = mergedpd['min'].astype('int64')
     mergedpd = mergedpd.query('min > 0')
-    mergedpd = mergedpd.query("Status != 'BE'")  
-    mergedpd = mergedpd.query("Status != 'IR'")
 
     print('Merge completed. Beginning Z-score calculations.')
 
@@ -202,10 +156,8 @@ if mergedpd.empty is False:
 
     print('Best lines:')
     top = mergedpd.sort_values(by='ZSUM', ascending=False)
-    if 11 <= len(top.index) <= 30:
+    if len(top.index) < 30:
         topprintout = printout(top, 5)
-    elif len(top.index) <= 10:
-        topprintout=printout(top, 3)
     else:
         topprintout = printout(top, 10)
 
@@ -213,62 +165,8 @@ if mergedpd.empty is False:
     #finding worst lines 
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
-    if len(bottom.index) <= 10:
-        bottomprintout = printout(bottom, 3)
-    else:
-        bottomprintout = printout(bottom, 5)
+    bottomprintout = printout(bottom, 15)
 
-
-
-    #creating daily graph
-    print('Beginning GM Z-sum graph creation.')
-    mergedpd = mergedpd.rename(columns={
-    'min':'MIN'
-    })
-
-    gmsums = mergedpd.groupby('Abbrev').agg({
-    'MIN':'sum',
-    'ZSUM':'sum'
-    }).round(decimals=2
-    ).reset_index()
-
-
-    data_stream = io.BytesIO()
-
-    plt.style.use("dark_background")
-    fig, ax = plt.subplots(figsize=(12,9))
-
-    ax.set(ylim=(-30, 30))
-    ax.set_title(str(f"Daily Z-Sum for {yeardate}"), fontsize=25)
-
-    barplot = sns.barplot(
-    gmsums,
-    x='Abbrev',
-    y='ZSUM',
-    hue='Abbrev',
-    order=gmsums.sort_values(by='ZSUM', ascending=False).Abbrev
-    )
-
-    for i, (containers, values) in enumerate(zip(ax.containers, gmsums['ZSUM'])):
-        if 2.5 >= values >= -2.5: #if value is below 2.5 and above -2.5...
-            ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5) #values go outside bar due to narrow length in this case
-        else:
-            ax.bar_label(ax.containers[i], fontsize=11.5, padding=1.5, label_type='center', color='k')
-        
-
-    plt.xlabel('Team', labelpad=13, fontsize=20)
-    plt.ylabel('Z-Sum', fontsize=20)
-    plt.xticks(fontsize=16)
-    plt.yticks(fontsize=16)
-
-    #if you need to debug the image with the actual width/height before it gets sent out, download the simply-view-image-for-python-debugging extension and input "fig" to use it once the plot is done: https://marketplace.visualstudio.com/items?itemName=elazarcoh.simply-view-image-for-python-debugging
-    fig
-    plt.savefig(data_stream, format='png', bbox_inches="tight", dpi = 80) #bbox inches insures that our graph margins aren't too big
-    plt.close()
-
-    data_stream.seek(0)
-    chart=discord.File(data_stream, filename='dailyzsum.png')
-    print('Graph created and saved.')
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
