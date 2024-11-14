@@ -20,6 +20,7 @@ from datetime import date
 #importing league
 from espn_api.basketball import League
 league = League(league_id=config.leagueid, year=2025, espn_s2=config.espn_s2config, swid=config.swid)
+print('ESPN league imported.')
 #note that you WILL need to reload the league if you want to refresh data; i.e. if you use an older instance, it won't understand if a player was added to someone's team afterwards
 
 #importing line module
@@ -36,6 +37,7 @@ jsonlist = []
 next_cursor_page = None
 
 #create scraping loop
+print('Starting Ball Don\'t Lie scrape.')
 while True:
     params = {'start_date':yeardate, 'end_date':yeardate, 'per_page':'100'}
     if next_cursor_page:
@@ -149,6 +151,7 @@ def printout(bdldf, maxlines) -> str:
     return printed
         
 if mergedpd.empty is False:
+    print('Beginning ESPN and BDL dataframe merge.')
     mergedpd['PlayerName'] = mergedpd['player.first_name'] + " " + mergedpd['player.last_name']
     mergedpd['GM'] = mergedpd['PlayerName'].map(playerdict)
     mergedpd['Status'] = mergedpd['PlayerName'].map(statusdict)
@@ -159,7 +162,7 @@ if mergedpd.empty is False:
     mergedpd = mergedpd.query("Status != 'BE'")  
     mergedpd = mergedpd.query("Status != 'IR'")
 
-
+    print('Merge completed. Beginning Z-score calculations.')
 
     mergedpd['FGAR'] = (mergedpd['fgm']-(0.4834302*mergedpd['fga'])) 
     mergedpd['FTAR'] = (mergedpd['ftm']-(0.7940223*mergedpd['fta']))
@@ -197,16 +200,24 @@ if mergedpd.empty is False:
     mergedpd.loc[mergedpd['STLZ'] > 2.5, 'stl_s'] = '**' + mergedpd['stl_s'] + '**'
 
 
+    print('Best lines:')
     top = mergedpd.sort_values(by='ZSUM', ascending=False)
-    if len(top.index) < 30:
+    if 11 <= len(top.index) <= 30:
         topprintout = printout(top, 5)
+    elif len(top.index) <= 10:
+        topprintout = printout(top, 3)
     else:
         topprintout = printout(top, 10)
 
+    print('Worst lines:')
     #finding worst lines 
     bottom = mergedpd.sort_values(by='ZSUM', ascending=True)
     bottom = bottom.query('min >= 14') #players must play 14 min to make it into the worst list (excluding injured players)
-    bottomprintout = printout(bottom, 5)
+    if len(bottom.index) <= 10:
+        bottomprintout = printout(bottom, 3)
+    else:
+        bottomprintout = printout(bottom, 5)
+
 
     mergedpd = mergedpd.rename(columns={
     'min':'MIN'
@@ -220,7 +231,7 @@ if mergedpd.empty is False:
 
 
     #creating daily graph
-
+    print('Beginning GM Z-sum graph creation.')
     data_stream = io.BytesIO()
 
     plt.style.use("dark_background")
@@ -256,9 +267,12 @@ if mergedpd.empty is False:
 
     data_stream.seek(0)
     chart=discord.File(data_stream, filename='dailyzsum.png')
+    print('Graph created and saved.')
         
 #debug note: when you're running this query set to 24 or more minutes, it won't work well if it's the beginning of the game. 
 #running bot
+
+print('Beginning Discord post.')
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
@@ -272,3 +286,4 @@ async def on_ready():
         await channel.send("Let\'s end today\'s episode of On Fire with a visualization of how each team did as a whole relative to their active player\'s Z-scores:", file=chart)
 
 bot.run(config.discord_token)
+print('Post sent.')
