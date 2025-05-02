@@ -25,10 +25,11 @@
 <!-- TOC --><a name="what-is-this"></a>
 # What is this?
 
-This project is a Discord bot developed for my local fantasy league (Omarball) to be used in the league's Discord server. It was inspired by r/fantasybball posts from [u/nerdyog15](https://www.reddit.com/r/fantasybball/comments/18sl3ie/top_10_player_appreciation_anything_goes/) where each post would sum the best and worst lines of the day. 
+This project is a Discord bot developed for my local fantasy league (Omarball) to be used in the league's Discord server. It was inspired by r/fantasybball posts from [u/nerdyog15](https://www.reddit.com/r/fantasybball/comments/18sl3ie/top_10_player_appreciation_anything_goes/) where each post would sum the best and worst lines of the day. A more recent version of this program added a graph feature where it displays how each fantasy team in Omarball did relative to average Z-scores from NBA players.  
 
 ![on fire updated example](https://github.com/d-trigo/on-fire-omarball/assets/153132523/ba7ad7b9-06a5-497a-8450-bfc234be93c8)
 
+![dailyzsum](https://github.com/user-attachments/assets/cbecc77c-8e66-414b-bd31-37c6a0fc6284)
 
 <!-- TOC --><a name="what-packages-and-apis-are-used-in-this-project"></a>
 # What packages and APIs are used in this project?
