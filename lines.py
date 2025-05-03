@@ -9,6 +9,7 @@ lines = [ #corny intros to start up each On Fire message; message is selected at
     'On Fire is on the wire!',
     'If you touch these lines you\'ll get burned!',
     'There\'s a heatwave in the league!',
+    'Call the fire department, we have an inferno in the league!',
     'A water hose can\'t put out this level of heat!',
     'Another day of Omarball, another set of All-Star lines!',
     'These lines will make you shout \'Boomshakalaka!\''
@@ -30,6 +31,8 @@ def intro(todaysdate) -> str:
         return 'Merry Christmas! Tis the season to not only be jolly but to also receive the great gift of 🔥 lines from your team! Let\'s see who got the best gifts in Omarball today:'
     elif todaysdate == '1-01':
         return 'Happy New Year! A new year for Omarball not only means a new you but also a new set of 🔥 lines for the day! Let\'s see who kicking off the new year the right way:'
+    elif todaysdate == '11-14':
+        return 'Hi all, today is an odd day since we only had one game between Mavericks-Jazz. On Fire\'s recap is ready, but there will be many missing teams here along with limited stats to draw from which means that we\'re shortening the printout to three today. Even then, "worst" stats today might not be all that bad! With that said, time for the 🔥 lines of the night:'
     elif todaysdate == '11-27':
         return 'Happy day before Thanksgiving! What are you grateful for most: friends, family, or 🔥 lines that come in clutch for your team? Let\'s answer that right now by taking a look at the best lines:'
     elif todaysdate == '02-13': #meant for last games before all star break, will change date when i found out correct day before break
@@ -47,6 +50,8 @@ def worstintro(todaysdate) -> str: #more to be added here
         return 'Unfortunately, some have been on the naughty list and are getting coal in their Christmas stocking...let\'s see who was on ❄ today:'
     elif todaysdate == '1-01':
         return 'Unfortunately, some are still feeling the effects of all that champagne...here\'s the ones who are still in last year:'
+    elif todaysdate == '11-14':
+        return 'Here are the "worst" lines, but again remember there weren\'t many lines today overall!'
     elif todaysdate == '11-27':
         return 'Unfortunately, just like your aunt\'s asparagus, some players were a bit overcooked...here\'s who looked like a headless 🦃 on the court:'
     elif todaysdate == '02-13': #meant for last games before all star break, will change date when i found out correct day before break
